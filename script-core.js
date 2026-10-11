@@ -1,6 +1,8 @@
 "use strict";
 
 (function () {
+  document.documentElement.classList.add("js");
+
   const REVIEW_LABEL = "نیاز به بررسی";
 
   const formatPrice = (raw) => {

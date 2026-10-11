@@ -1,15 +1,25 @@
 #!/usr/bin/env python3
 """Generate static HTML pages with shared header/footer."""
+import os
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-SITE = "https://chatreabi.ir"
+# GitHub project site: https://itsaligadimi.github.io/ChatreAbiMenu/
+PAGES_BASE = os.environ.get("PAGES_BASE", "/ChatreAbiMenu/")
+SITE = os.environ.get("SITE_URL", "https://itsaligadimi.github.io/ChatreAbiMenu").rstrip("/")
+
+
+def asset(path: str) -> str:
+    if path.startswith("http://") or path.startswith("https://"):
+        return path
+    base = PAGES_BASE if PAGES_BASE.endswith("/") else PAGES_BASE + "/"
+    return base + path.lstrip("/")
 
 PAGES = {
     "index": {
         "title": "رستوران چتر آبی | منوی غذا و صبحانه",
         "desc": "رستوران چتر آبی — طعم اصیل غذاهای ایرانی، صبحانه‌های متنوع، کباب و پیش‌غذا. منو و قیمت‌ها به تومان.",
-        "canonical": f"{SITE}/",
+        "canonical": f"{SITE}/index.html",
         "current": "index",
         "skip": "#featured",
     },
@@ -72,16 +82,17 @@ NAV = [
     ("contact.html", "تماس با ما", "contact"),
 ]
 
-JSON_LD = """<script type="application/ld+json">
-{
+def json_ld() -> str:
+    return f"""<script type="application/ld+json">
+{{
   "@context": "https://schema.org",
   "@type": "Restaurant",
   "name": "رستوران چتر آبی",
-  "url": "https://chatreabi.ir/",
+  "url": "{SITE}/",
   "telephone": "+98-41-33312437",
   "servesCuisine": "Persian",
-  "menu": "https://chatreabi.ir/menu.html"
-}
+  "menu": "{SITE}/menu.html"
+}}
 </script>"""
 
 
@@ -102,9 +113,10 @@ def head(meta: dict) -> str:
     <meta property="og:url" content="{meta['canonical']}" />
     <meta property="og:image" content="{SITE}/images/food/omelet-darbary.jpg" />
     <title>{meta['title']}</title>
-    <link rel="icon" href="images/logo.png" type="image/png" />
-    <link rel="stylesheet" href="style.css" />
-    {JSON_LD if meta['current'] == 'index' else ''}
+    <base href="{PAGES_BASE}" />
+    <link rel="icon" href="{asset('images/logo.png')}" type="image/png" />
+    <link rel="stylesheet" href="{asset('style.css')}" />
+    {json_ld() if meta['current'] == 'index' else ''}
   </head>"""
 
 
@@ -112,14 +124,14 @@ def header(current: str, skip: str) -> str:
     nav_items = []
     for href, label, key in NAV:
         cur = ' aria-current="page"' if key == current else ""
-        nav_items.append(f'<li><a href="{href}"{cur}>{label}</a></li>')
+        nav_items.append(f'<li><a href="{asset(href)}"{cur}>{label}</a></li>')
     nav_html = "\n            ".join(nav_items)
     return f"""  <body>
     <a class="skip-link" href="{skip}">رفتن به محتوای اصلی</a>
     <header class="site-header">
       <div class="container header-inner">
-        <a class="logo-link" href="index.html">
-          <img src="images/logo.png" width="120" height="46" alt="لوگوی رستوران چتر آبی" />
+        <a class="logo-link" href="{asset('index.html')}">
+          <img src="{asset('images/logo.png')}" width="120" height="46" alt="لوگوی رستوران چتر آبی" />
           <span class="logo-text">چتر آبی</span>
         </a>
         <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="باز و بسته کردن منو">
@@ -130,13 +142,13 @@ def header(current: str, skip: str) -> str:
             {nav_html}
           </ul>
         </nav>
-        <a class="btn btn-primary header-cta" href="menu.html">مشاهده منو</a>
+        <a class="btn btn-primary header-cta" href="{asset('menu.html')}">مشاهده منو</a>
       </div>
     </header>"""
 
 
 def footer() -> str:
-    return """    <footer class="site-footer">
+    return f"""    <footer class="site-footer">
       <div class="container">
         <div class="footer-grid">
           <div class="footer-brand">
@@ -174,7 +186,7 @@ def footer() -> str:
         </div>
       </div>
     </footer>
-    <script src="script.js" defer></script>
+    <script src="{asset('script.js')}" defer></script>
   </body>
 </html>"""
 

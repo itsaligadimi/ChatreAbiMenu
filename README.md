@@ -34,6 +34,8 @@ python3 -m http.server 8080
 
 ```bash
 python3 tools/build_pages.py
+# برای تست محلی بدون پیشوند GitHub Pages:
+PAGES_BASE=/ SITE_URL=http://localhost:8080 python3 tools/build_pages.py
 ```
 
 پس از تغییر `script-core.js`:
@@ -47,7 +49,11 @@ cat script-core.js /tmp/menu-data-const.js > script.js
 
 ## GitHub Pages
 
-پس از push به `main`، workflow محتوا را به شاخه **`gh-pages`** منتشر می‌کند.
+**آدرس:** https://itsaligadimi.github.io/ChatreAbiMenu/
+
+در **Settings → Pages** منبع را **Deploy from a branch** قرار دهید: شاخه **`main`**، پوشه **`/ (root)`**. فایل `.nojekyll` در ریشه لازم است.
+
+اگر منبع روی `gh-pages` یا **GitHub Actions** است ولی workflow مربوطه ندارید، سایت خالی می‌ماند — منبع را به **`main`** تغییر دهید.
 
 ## نکات محتوا
 

@@ -1,6 +1,8 @@
 "use strict";
 
 (function () {
+  document.documentElement.classList.add("js");
+
   const REVIEW_LABEL = "نیاز به بررسی";
 
   const formatPrice = (raw) => {
@@ -179,6 +181,7 @@
       });
 
       const categoryOrder = ["breakfast", "iranian", "kebab", "appetizer", "drinks"];
+      const breakfastSubs = ["املت", "نیمرو", "بشقاب و خوراک"];
 
       categoryOrder.forEach((catKey) => {
         const catItems = byCategory.get(catKey);
@@ -209,21 +212,11 @@
         let inner = `<h2 id="${section.id}-title">${escapeHtml(meta ? meta.label : catKey)}</h2>`;
 
         orderedSections.forEach((sectionName) => {
-          const isSub =
-            catKey === "breakfast" &&
-            ["املت", "نیمرو", "بشقاب و خوراک"].includes(sectionName);
-          if (isSub) {
-            inner += `<div class="menu-subsection"><h3>${escapeHtml(sectionName)}</h3>`;
-            inner += `<ul class="menu-list">${bySection.get(sectionName).map(renderLine).join("")}</ul></div>`;
-          } else if (catKey === "breakfast" && sectionName !== "غذای ایرانی") {
-            inner += `<ul class="menu-list">${bySection.get(sectionName).map(renderLine).join("")}</ul>`;
-          } else if (catKey !== "breakfast") {
-            if (sectionName !== meta?.label && sectionName !== "غذای ایرانی" && sectionName !== "کبابها") {
-              inner += `<div class="menu-subsection"><h3>${escapeHtml(sectionName)}</h3>`;
-              inner += `<ul class="menu-list">${bySection.get(sectionName).map(renderLine).join("")}</ul></div>`;
-            } else {
-              inner += `<ul class="menu-list">${bySection.get(sectionName).map(renderLine).join("")}</ul>`;
-            }
+          const lines = bySection.get(sectionName).map(renderLine).join("");
+          if (catKey === "breakfast" && breakfastSubs.includes(sectionName)) {
+            inner += `<div class="menu-subsection"><h3>${escapeHtml(sectionName)}</h3><ul class="menu-list">${lines}</ul></div>`;
+          } else {
+            inner += `<ul class="menu-list">${lines}</ul>`;
           }
         });
 

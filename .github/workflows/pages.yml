@@ -1,4 +1,8 @@
-name: Deploy GitHub Pages
+# GitHub Pages: deploy static site from the main branch (root).
+# In repo Settings → Pages, choose "Deploy from a branch", branch main, folder / (root).
+# This workflow is optional: it verifies the site files and can be removed if you rely only on branch deploy.
+
+name: Verify GitHub Pages site
 
 on:
   push:
@@ -6,19 +10,18 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  deploy:
+  verify:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Deploy to gh-pages branch
-        uses: peaceiris/actions-gh-pages@v4
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: .
-          exclude_assets: ".github,design-system"
-          force_orphan: true
+      - name: Check required entry files
+        run: |
+          test -f index.html
+          test -f style.css
+          test -f script.js
+          test -f .nojekyll
+          echo "Static site files OK for branch deploy from main."
