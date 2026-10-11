@@ -8,6 +8,13 @@
     other: "سایر",
   };
 
+  const SIGNATURE_PICKS = [
+    "املت درباری",
+    "بشقاب ایرانی",
+    "چلو کوبیده مخصوص",
+    "باقالی پلو با ماهیچه",
+  ];
+
   const formatPrice = (raw) => {
     const digits = String(raw || "").replace(/\D/g, "");
     if (!digits) return "—";
@@ -26,6 +33,7 @@
   const searchInput = document.getElementById("menu-search");
   const filterChips = Array.from(document.querySelectorAll(".filter-chip"));
   const categoryJumpCards = Array.from(document.querySelectorAll("[data-jump-category]"));
+  const signatureGrid = document.getElementById("signature-grid");
 
   let activeCategory = "all";
   let searchQuery = "";
@@ -43,6 +51,45 @@
     });
   };
 
+  const escapeHtml = (str) =>
+    String(str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+
+  const renderSignature = () => {
+    if (!signatureGrid) return;
+    const items = getItems();
+    const picks = SIGNATURE_PICKS
+      .map((title) => items.find((i) => i.title.trim() === title))
+      .filter(Boolean);
+
+    const fallback = items.filter((i) => i.image).slice(0, 4);
+    const showcase = picks.length >= 3 ? picks : fallback;
+
+    signatureGrid.innerHTML = showcase
+      .map(
+        (item) => `
+      <article class="signature-card reveal">
+        ${
+          item.image
+            ? `<img src="${escapeHtml(item.image)}" alt="" loading="lazy" decoding="async" />`
+            : `<div style="min-height:16rem;background:linear-gradient(145deg,#1e3a8a,#0f172a)"></div>`
+        }
+        <div class="signature-card-overlay">
+          <h3>${escapeHtml(item.title)}</h3>
+          <p>${escapeHtml(item.desc || item.section)}</p>
+          <span class="signature-price">${escapeHtml(formatPrice(item.price))}</span>
+        </div>
+      </article>
+    `
+      )
+      .join("");
+
+    observeReveal(signatureGrid.querySelectorAll(".reveal"));
+  };
+
   const renderMenu = () => {
     const items = filterItems();
     menuGrid.innerHTML = "";
@@ -52,26 +99,33 @@
 
     items.forEach((item, index) => {
       const card = document.createElement("article");
-      card.className = "menu-card" + (item.image ? " has-image" : "");
-      card.style.animationDelay = `${Math.min(index * 0.04, 0.4)}s`;
-
-      let mediaHtml = "";
-      if (item.image) {
-        mediaHtml = `<div class="menu-card-media"><img src="${item.image}" alt="" loading="lazy" decoding="async" /></div>`;
-      }
+      card.className = "menu-card" + (item.image ? "" : " no-image");
+      card.style.animationDelay = `${Math.min(index * 0.035, 0.45)}s`;
 
       const sectionLabel = item.section || CATEGORY_LABELS[item.category] || "";
       const price = formatPrice(item.price);
+      const title = escapeHtml(item.title);
+      const desc = item.desc ? `<p class="menu-card-desc">${escapeHtml(item.desc)}</p>` : "";
+
+      let mediaHtml = "";
+      if (item.image) {
+        mediaHtml = `
+          <div class="menu-card-media">
+            <span class="menu-card-badge">${escapeHtml(sectionLabel)}</span>
+            <img src="${escapeHtml(item.image)}" alt="" loading="lazy" decoding="async" />
+          </div>`;
+      }
 
       card.innerHTML = `
         ${mediaHtml}
         <div class="menu-card-body">
-          <div class="menu-card-top">
-            <h3 class="menu-card-title">${item.title}</h3>
-            <span class="menu-card-price">${price}</span>
+          <div class="menu-card-row">
+            <h3 class="menu-card-title">${title}</h3>
+            <span class="menu-card-leader" aria-hidden="true"></span>
+            <span class="menu-card-price">${escapeHtml(price)}</span>
           </div>
-          <p class="menu-card-meta">${sectionLabel}</p>
-          ${item.desc ? `<p class="menu-card-desc">${item.desc}</p>` : ""}
+          ${!item.image ? `<p class="menu-card-meta">${escapeHtml(sectionLabel)}</p>` : ""}
+          ${desc}
         </div>
       `;
 
@@ -108,7 +162,6 @@
     });
   });
 
-  // Mobile nav
   const navToggle = document.querySelector(".nav-toggle");
   const mobileNav = document.getElementById("mobile-nav");
   navToggle?.addEventListener("click", () => {
@@ -124,17 +177,45 @@
     });
   });
 
-  // Header shadow on scroll
   const header = document.querySelector(".site-header");
   const onScroll = () => {
     if (!header) return;
-    header.style.boxShadow = window.scrollY > 8 ? "var(--shadow-md)" : "none";
+    const scrolled = window.scrollY > 12;
+    header.classList.toggle("is-scrolled", scrolled);
+    header.style.boxShadow = scrolled ? "var(--shadow-md)" : "none";
   };
   window.addEventListener("scroll", onScroll, { passive: true });
   onScroll();
 
+  const observeReveal = (nodes) => {
+    const targets = nodes || document.querySelectorAll(".reveal:not(.is-visible)");
+    if (!targets.length) return;
+
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduced) {
+      targets.forEach((el) => el.classList.add("is-visible"));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible");
+            io.unobserve(entry.target);
+          }
+        });
+      },
+      { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+    );
+
+    targets.forEach((el) => io.observe(el));
+  };
+
   const yearEl = document.getElementById("year");
   if (yearEl) yearEl.textContent = String(new Date().getFullYear());
 
+  renderSignature();
   renderMenu();
+  observeReveal(document.querySelectorAll(".reveal"));
 })();
