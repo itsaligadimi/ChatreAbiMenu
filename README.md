@@ -21,9 +21,11 @@ python3 -m http.server 8080
 
 ## GitHub Pages
 
-1. در مخزن GitHub به **Settings → Pages** بروید.
-2. **Source**: GitHub Actions (workflow `Deploy GitHub Pages` روی push به `main` اجرا می‌شود).
-3. پس از اولین deploy موفق، آدرس سایت در همان صفحه نمایش داده می‌شود (معمولاً `https://<username>.github.io/ChatreAbiMenu/`).
+1. پس از push به `main`، workflow محتوا را به شاخهٔ **`gh-pages`** منتشر می‌کند.
+2. در مخزن GitHub به **Settings → Pages** بروید.
+3. **Build and deployment → Source**: Deploy from a branch.
+4. **Branch**: `gh-pages` / **`/ (root)`** → Save.
+5. آدرس سایت: `https://itsaligadimi.github.io/ChatreAbiMenu/` (پس از چند دقیقه).
 
 ### دامنه سفارشی (chatreabi.ir)
 
