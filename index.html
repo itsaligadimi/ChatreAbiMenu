@@ -5,360 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta
       name="description"
-      content="رستوران چتر آبی — منوی دیجیتال صبحانه، غذای ایرانی، کباب، پیش‌غذا و نوشیدنی. کلیه قیمت‌ها به تومان."
+      content="رستوران چتر آبی — منوی دیجیتال. صبحانه، غذای ایرانی، کباب، پیش‌غذا و نوشیدنی. قیمت‌ها به تومان."
     />
-    <title>رستوران چتر آبی | منوی دیجیتال</title>
+    <title>رستوران چتر آبی | منو</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Karla:wght@300;400;500;600;700&family=Playfair+Display+SC:wght@400;700&family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=Pacifico&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="css/styles.css" />
-    <link rel="icon" href="assets/icons/food.png" type="image/png" />
+    <link rel="icon" href="assets/logo.png" type="image/png" />
   </head>
-  <body>
-    <div class="ambient ambient-a" aria-hidden="true"></div>
-    <div class="ambient ambient-b" aria-hidden="true"></div>
-    <div class="page-grain" aria-hidden="true"></div>
+  <body class="brand-body">
+    <div class="checker-field" aria-hidden="true"></div>
     <a class="skip-link" href="#menu">رفتن به منو</a>
 
-    <header class="site-header" id="top">
-      <div class="header-inner">
-        <a class="brand" href="#top" aria-label="رستوران چتر آبی — صفحه اصلی">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 48 48" width="40" height="40" fill="none">
-              <path
-                d="M8 32c0-10 6-18 16-22 10 4 16 12 16 22v4H8v-4z"
-                fill="currentColor"
-                opacity="0.9"
-              />
-              <path d="M24 8v6M18 10l3 5M30 10l-3 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-            </svg>
-          </span>
-          <span class="brand-text">
-            <span class="brand-title">چتر آبی</span>
-            <span class="brand-sub">رستوران و کافه</span>
-          </span>
+    <header class="top-bar">
+      <div class="top-bar-inner">
+        <a class="top-logo" href="#top">
+          <img src="assets/logo.png" width="200" height="76" alt="Blue Umbrella Restaurant — رستوران چتر آبی" />
         </a>
-        <nav class="nav-desktop" aria-label="ناوبری اصلی">
-          <a href="#experience">تجربه</a>
-          <a href="#categories">دسته‌ها</a>
+        <nav class="top-nav" aria-label="میانبرها">
           <a href="#menu">منو</a>
-          <a href="#contact">تماس</a>
+          <a href="#footer-contact">تماس</a>
         </nav>
-        <a class="btn btn-primary btn-sm header-cta" href="#menu">مشاهده منو</a>
-        <button
-          type="button"
-          class="nav-toggle"
-          aria-expanded="false"
-          aria-controls="mobile-nav"
-        >
-          <span class="sr-only">باز کردن منو</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-          </svg>
-        </button>
+        <a class="top-call" href="tel:+984133312437">
+          <span class="top-call-label">رزرو</span>
+          <span class="top-call-num" dir="ltr">041 3331 2437</span>
+        </a>
       </div>
-      <nav class="nav-mobile" id="mobile-nav" hidden aria-label="منوی موبایل">
-        <a href="#experience">تجربه</a>
-        <a href="#categories">دسته‌ها</a>
-        <a href="#menu">منو</a>
-        <a href="#contact">تماس</a>
-      </nav>
     </header>
 
-    <main>
-      <section class="hero" aria-labelledby="hero-title">
-        <div class="hero-bg" role="presentation"></div>
-        <div class="hero-pattern" aria-hidden="true"></div>
-        <div class="hero-glow" aria-hidden="true"></div>
-        <div class="hero-layout container">
-          <div class="hero-content reveal">
-            <p class="hero-eyebrow">
-              <span class="eyebrow-dot" aria-hidden="true"></span>
-              منوی دیجیتال · رستوران چتر آبی
-            </p>
-            <h1 id="hero-title">طعم <span class="text-accent">اصیل ایرانی</span> زیر چتر آبی</h1>
-            <p class="hero-lead">
-              از صبحانه‌های داغ و بشقاب‌های سنتی تا خورشت‌های خانگی و کباب‌های ممتاز — منویی
-              شفاف، زیبا و آماده برای سفارش شما.
-            </p>
-            <div class="hero-actions">
-              <a class="btn btn-primary" href="#menu">
-                <span>مشاهده منو</span>
-                <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
-                  <path
-                    d="M5 12h14M13 6l6 6-6 6"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </a>
-              <a class="btn btn-ghost" href="tel:+989122794809">رزرو: ۰۹۱۲۲۷۹۴۸۰۹</a>
-            </div>
-            <ul class="hero-stats glass-panel">
-              <li><strong>۸۲+</strong><span>آیتم در منو</span></li>
-              <li><strong>۵</strong><span>دسته غذایی</span></li>
-              <li><strong>۱۰۰٪</strong><span>قیمت به تومان</span></li>
-            </ul>
-          </div>
-          <div class="hero-visual reveal" aria-hidden="true">
-            <div class="hero-photo hero-photo-main">
-              <img
-                src="https://chatreabi.ir/wp-content/uploads/2025/04/املت-درباری.jpg"
-                alt=""
-                width="480"
-                height="560"
-                fetchpriority="high"
-              />
-            </div>
-            <div class="hero-photo hero-photo-secondary">
-              <img
-                src="https://images.unsplash.com/photo-1603360946369-dc9bb6258143?auto=format&fit=crop&w=600&q=80"
-                alt=""
-                width="280"
-                height="320"
-                loading="lazy"
-              />
-            </div>
-            <div class="hero-badge">
-              <span class="hero-badge-title">پیشنهاد ویژه</span>
-              <span class="hero-badge-sub">املت درباری</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <div class="marquee" aria-hidden="true">
-        <div class="marquee-track">
-          <span>صبحانه ایرانی</span><span>کباب ممتاز</span><span>خورشت سنتی</span
-          ><span>ته‌چین</span><span>زرشک پلو</span><span>چای دمی</span><span>میز درباری</span
-          ><span>صبحانه ایرانی</span><span>کباب ممتاز</span><span>خورشت سنتی</span
-          ><span>ته‌چین</span><span>زرشک پلو</span><span>چای دمی</span><span>میز درباری</span>
+    <section class="hero-ring" id="top" aria-labelledby="hero-heading">
+      <div class="hero-ring-outer">
+        <div class="hero-ring-inner">
+          <img
+            class="hero-logo"
+            src="assets/logo.png"
+            width="280"
+            height="106"
+            alt=""
+            aria-hidden="true"
+          />
+          <h1 id="hero-heading" class="hero-title-fa">رستوران چتر آبی</h1>
+          <p class="hero-en"><span class="hero-blue">Blue</span> <span class="hero-script">Umbrella</span></p>
+          <p class="hero-note">
+            ضمن خیر مقدم؛ <strong>کلیه قیمت‌ها به تومان</strong> است. منو را مرور کنید یا برای رزرو تماس
+            بگیرید.
+          </p>
+          <a class="hero-menu-cta" href="#menu">
+            <span>ورود به منو</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" />
+            </svg>
+          </a>
         </div>
       </div>
+      <aside class="hero-contact-card" aria-label="تماس سریع">
+        <p class="hero-contact-kicker">رزرو و پرسش</p>
+        <a class="contact-tile contact-tile-phone" href="tel:+984133312437">
+          <span>تلفن ۱</span>
+          <strong dir="ltr">041-33312437</strong>
+        </a>
+        <a class="contact-tile contact-tile-phone" href="tel:+984133297177">
+          <span>تلفن ۲</span>
+          <strong dir="ltr">041-33297177</strong>
+        </a>
+        <a
+          class="contact-tile contact-tile-wa"
+          href="https://wa.me/989122794809"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <span>واتساپ</span>
+          <strong>پیام فوری</strong>
+        </a>
+      </aside>
+    </section>
 
-      <section class="welcome strip" aria-label="پیام خوش‌آمد">
-        <div class="container welcome-inner">
-          <div class="ornament" aria-hidden="true">✦</div>
-          <p>
-            ضمن خیر مقدم به شما میهمانان گرامی؛
-            <strong>کلیه قیمت‌ها به تومان</strong> می‌باشد.
-          </p>
-        </div>
-      </section>
+    <main class="menu-stage" id="menu" aria-labelledby="menu-heading">
+      <div class="menu-stage-layout">
+        <aside class="menu-rail" aria-label="فیلتر منو">
+          <h2 id="menu-heading" class="menu-rail-title">منو</h2>
+          <p class="menu-rail-hint">دسته را انتخاب کنید</p>
+          <div class="rail-filters" role="tablist">
+            <button type="button" class="rail-filter is-active" data-category="all" role="tab" aria-selected="true">
+              همه
+            </button>
+            <button type="button" class="rail-filter" data-category="breakfast" role="tab" aria-selected="false">
+              صبحانه
+            </button>
+            <button type="button" class="rail-filter" data-category="iranian" role="tab" aria-selected="false">
+              غذای ایرانی
+            </button>
+            <button type="button" class="rail-filter" data-category="kebab" role="tab" aria-selected="false">
+              کباب
+            </button>
+            <button type="button" class="rail-filter" data-category="appetizer" role="tab" aria-selected="false">
+              پیش‌غذا
+            </button>
+            <button type="button" class="rail-filter" data-category="drinks" role="tab" aria-selected="false">
+              نوشیدنی
+            </button>
+          </div>
+          <div class="rail-contact">
+            <p>سوال دارید؟</p>
+            <a href="tel:+984133312437" dir="ltr">041 3331 2437</a>
+          </div>
+        </aside>
 
-      <section class="section section-dark" id="signature" aria-labelledby="signature-title">
-        <div class="container">
-          <div class="section-head section-head-light reveal">
-            <p class="section-eyebrow">پیشنهاد سرآشپز</p>
-            <h2 id="signature-title">محبوب‌ترین انتخاب‌ها</h2>
-            <p>چند طعم محبوب از منوی زنده — برای شروع سفارش ایده بگیرید.</p>
-          </div>
-          <div class="signature-grid" id="signature-grid"></div>
-        </div>
-      </section>
-
-      <section class="section" id="experience" aria-labelledby="experience-title">
-        <div class="container">
-          <div class="section-head reveal">
-            <p class="section-eyebrow">چرا چتر آبی</p>
-            <h2 id="experience-title">میزبانی گرم، منوی شفاف</h2>
-            <p>همان منوی کامل شما — با جستجو، فیلتر و تجربه‌ای لوکس روی موبایل و دسکتاپ.</p>
-          </div>
-          <div class="feature-grid">
-            <article class="feature-card reveal">
-              <div class="feature-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                  <path
-                    d="M4 7h16M4 12h10M4 17h16"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                  />
-                </svg>
-              </div>
-              <h3>منوی زنده</h3>
-              <p>فیلتر دسته، جستجو و مشاهده جزئیات هر غذا با یک لمس.</p>
-            </article>
-            <article class="feature-card reveal feature-card-accent">
-              <div class="feature-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                  <path
-                    d="M12 3l2.4 6.8H21l-5.2 3.8 2 6.4L12 16.8 6.2 20l2-6.4L3 9.8h6.6L12 3z"
-                    stroke="currentColor"
-                    stroke-width="1.8"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-              </div>
-              <h3>کیفیت و تنوع</h3>
-              <p>از املت‌های صبحانه تا خورشت‌های سنتی و کباب‌های ممتاز.</p>
-            </article>
-            <article class="feature-card reveal">
-              <div class="feature-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" width="28" height="28" fill="none">
-                  <path
-                    d="M12 21s7-4.5 7-11a7 7 0 10-14 0c0 6.5 7 11 7 11z"
-                    stroke="currentColor"
-                    stroke-width="2"
-                  />
-                  <circle cx="12" cy="10" r="2.5" fill="currentColor" />
-                </svg>
-              </div>
-              <h3>رزرو و تماس</h3>
-              <p>برای رزرو میز یا پرسش، مستقیم با ما در تماس باشید.</p>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="section section-muted" id="categories" aria-labelledby="categories-title">
-        <div class="container">
-          <div class="section-head reveal">
-            <p class="section-eyebrow">کاوش منو</p>
-            <h2 id="categories-title">دسته‌های منو</h2>
-            <p>یکی را انتخاب کنید تا مستقیم به همان بخش منو بروید.</p>
-          </div>
-          <div class="category-grid bento">
-            <a class="category-card category-card-hero reveal" href="#menu" data-jump-category="breakfast">
-              <div class="category-card-bg" style="--cat-img: url('https://chatreabi.ir/wp-content/uploads/2025/04/بشقاب-ایرانی.jpg')"></div>
-              <img src="assets/icons/breakfast.png" alt="" width="80" height="80" loading="lazy" />
-              <h3>صبحانه</h3>
-              <p>املت، نیمرو و بشقاب</p>
-              <span class="category-cta">مشاهده</span>
-            </a>
-            <a class="category-card reveal" href="#menu" data-jump-category="iranian">
-              <img src="assets/icons/food.png" alt="" width="80" height="80" loading="lazy" />
-              <h3>غذای ایرانی</h3>
-              <p>چلو، خورشت و ته‌چین</p>
-            </a>
-            <a class="category-card reveal" href="#menu" data-jump-category="kebab">
-              <img src="assets/icons/food.png" alt="" width="80" height="80" loading="lazy" />
-              <h3>کباب‌ها</h3>
-              <p>برگ، کوبیده و جوجه</p>
-            </a>
-            <a class="category-card reveal" href="#menu" data-jump-category="appetizer">
-              <img src="assets/icons/dessert_2.png" alt="" width="80" height="80" loading="lazy" />
-              <h3>پیش‌غذا و دسر</h3>
-              <p>سوپ، سالاد و بیشتر</p>
-            </a>
-            <a class="category-card reveal" href="#menu" data-jump-category="drinks">
-              <img src="assets/icons/drink.png" alt="" width="80" height="80" loading="lazy" />
-              <h3>نوشیدنی</h3>
-              <p>چای، دوغ و نوشابه</p>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <section class="section menu-section menu-section-premium" id="menu" aria-labelledby="menu-title">
-        <div class="container">
-          <div class="section-head">
-            <h2 id="menu-title">منوی کامل</h2>
-            <p>جستجو کنید یا با فیلتر دسته، سریع‌تر به غذای دلخواهتان برسید.</p>
-          </div>
-
+        <div class="menu-main">
           <div class="menu-toolbar">
             <label class="search-field">
               <span class="sr-only">جستجو در منو</span>
-              <svg class="search-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-                <circle cx="11" cy="11" r="7" stroke="currentColor" stroke-width="2" fill="none" />
-                <path d="M20 20l-3-3" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-              </svg>
               <input
                 type="search"
                 id="menu-search"
-                placeholder="نام غذا یا مواد تشکیل‌دهنده..."
+                placeholder="جستجو در منو..."
                 autocomplete="off"
               />
             </label>
-            <div class="filter-scroll" role="tablist" aria-label="فیلتر دسته منو">
-              <button type="button" class="filter-chip is-active" data-category="all" role="tab" aria-selected="true">
-                همه
-              </button>
-              <button type="button" class="filter-chip" data-category="breakfast" role="tab" aria-selected="false">
-                صبحانه
-              </button>
-              <button type="button" class="filter-chip" data-category="iranian" role="tab" aria-selected="false">
-                ایرانی
-              </button>
-              <button type="button" class="filter-chip" data-category="kebab" role="tab" aria-selected="false">
-                کباب
-              </button>
-              <button type="button" class="filter-chip" data-category="appetizer" role="tab" aria-selected="false">
-                پیش‌غذا
-              </button>
-              <button type="button" class="filter-chip" data-category="drinks" role="tab" aria-selected="false">
-                نوشیدنی
-              </button>
-            </div>
+            <p class="menu-result-count" id="menu-count" aria-live="polite"></p>
           </div>
-
-          <p class="menu-result-count" id="menu-count" aria-live="polite"></p>
-          <div class="menu-grid" id="menu-grid"></div>
-          <p class="menu-empty" id="menu-empty" hidden>موردی با این جستجو پیدا نشد.</p>
+          <div class="menu-sheet" id="menu-grid"></div>
+          <p class="menu-empty" id="menu-empty" hidden>چیزی با این جستجو پیدا نشد.</p>
         </div>
-      </section>
-
-      <section class="section" id="contact" aria-labelledby="contact-title">
-        <div class="container contact-grid">
-          <div class="contact-copy">
-            <h2 id="contact-title">تماس و رزرو</h2>
-            <p>برای رزرو میز، برگزاری مراسم یا پرسش درباره منو با ما تماس بگیرید.</p>
-            <ul class="contact-list">
-              <li>
-                <span class="contact-label">تلفن</span>
-                <a href="tel:+989122794809">۰۹۱۲۲۷۹۴۸۰۹</a>
-              </li>
-              <li>
-                <span class="contact-label">واتساپ</span>
-                <a href="https://wa.me/989122794809" target="_blank" rel="noopener noreferrer">پیام در واتساپ</a>
-              </li>
-              <li>
-                <span class="contact-label">وب‌سایت قبلی</span>
-                <a href="https://chatreabi.ir/" rel="noopener">chatreabi.ir</a>
-              </li>
-            </ul>
-          </div>
-          <div class="contact-card">
-            <h3>ساعات پیشنهادی تماس</h3>
-            <p>هر روز — برای ساعات دقیق سرویس با مجموعه هماهنگ کنید.</p>
-            <a class="btn btn-primary btn-block" href="tel:+989122794809">تماس برای رزرو</a>
-          </div>
-        </div>
-      </section>
+      </div>
     </main>
 
-    <footer class="site-footer">
-      <div class="container footer-inner">
-        <p>© <span id="year"></span> رستوران چتر آبی — طراحی و منوی دیجیتال جدید</p>
-        <a href="#top">بازگشت به بالا</a>
+    <footer class="site-footer" id="footer-contact">
+      <div class="footer-ring">
+        <img src="assets/logo.png" width="220" height="84" alt="رستوران چتر آبی" class="footer-logo" />
+        <p class="footer-tagline">رستوران چتر آبی · Blue Umbrella Restaurant</p>
+        <div class="footer-phones">
+          <a href="tel:+984133312437" dir="ltr">041 3331 2437</a>
+          <span class="footer-dot" aria-hidden="true"></span>
+          <a href="tel:+984133297177" dir="ltr">041 3329 7177</a>
+        </div>
+        <div class="footer-actions">
+          <a class="footer-btn footer-btn-call" href="tel:+984133312437">تماس برای رزرو</a>
+          <a
+            class="footer-btn footer-btn-wa"
+            href="https://wa.me/989122794809"
+            target="_blank"
+            rel="noopener noreferrer"
+            >واتساپ</a
+          >
+        </div>
+        <p class="footer-copy">© <span id="year"></span> رستوران چتر آبی · <a href="https://chatreabi.ir/">chatreabi.ir</a></p>
       </div>
     </footer>
 
-    <a
-      class="whatsapp-fab"
-      href="https://wa.me/989122794809"
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label="گفتگو در واتساپ"
-    >
-      <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
-        <path
-          fill="currentColor"
-          d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"
-        />
-        <path
-          fill="currentColor"
-          d="M12 2C6.477 2 2 6.477 2 12c0 1.89.525 3.66 1.438 5.168L2 22l4.832-1.438A9.955 9.955 0 0012 22c5.523 0 10-4.477 10-10S17.523 2 12 2zm0 18.182a8.18 8.18 0 01-4.165-1.14l-.298-.177-2.868.855.855-2.868-.177-.298A8.18 8.18 0 014.818 12c0-4.515 3.667-8.182 8.182-8.182S21.182 7.485 21.182 12 16.515 20.182 12 20.182z"
-        />
-      </svg>
-    </a>
+    <nav class="dock" aria-label="میانبر تماس و منو">
+      <a class="dock-item dock-menu is-primary" href="#menu">
+        <span>منو</span>
+      </a>
+      <a class="dock-item dock-call" href="tel:+984133312437">
+        <span>تماس</span>
+        <small dir="ltr">041</small>
+      </a>
+      <a
+        class="dock-item dock-wa"
+        href="https://wa.me/989122794809"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        <span>واتساپ</span>
+      </a>
+    </nav>
 
     <script src="js/menu-data.js" defer></script>
     <script src="js/app.js" defer></script>
