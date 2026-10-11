@@ -3,179 +3,293 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta
-      name="description"
-      content="رستوران چتر آبی — منوی دیجیتال. صبحانه، غذای ایرانی، کباب، پیش‌غذا و نوشیدنی. قیمت‌ها به تومان."
-    />
-    <title>رستوران چتر آبی | منو</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;600;700;800;900&family=Pacifico&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="css/styles.css" />
-    <link rel="icon" href="assets/logo.png" type="image/png" />
+    <meta name="description" content="رستوران چتر آبی — طعم اصیل غذاهای ایرانی، صبحانه‌های متنوع، کباب و پیش‌غذا. منو و قیمت‌ها به تومان." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://chatreabi.ir/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fa_IR" />
+    <meta property="og:site_name" content="رستوران چتر آبی" />
+    <meta property="og:title" content="رستوران چتر آبی | منوی غذا و صبحانه" />
+    <meta property="og:description" content="رستوران چتر آبی — طعم اصیل غذاهای ایرانی، صبحانه‌های متنوع، کباب و پیش‌غذا. منو و قیمت‌ها به تومان." />
+    <meta property="og:url" content="https://chatreabi.ir/" />
+    <meta property="og:image" content="https://chatreabi.ir/images/food/omelet-darbary.jpg" />
+    <title>رستوران چتر آبی | منوی غذا و صبحانه</title>
+    <link rel="icon" href="images/logo.png" type="image/png" />
+    <link rel="stylesheet" href="style.css" />
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Restaurant",
+  "name": "رستوران چتر آبی",
+  "url": "https://chatreabi.ir/",
+  "telephone": "+98-41-33312437",
+  "servesCuisine": "Persian",
+  "menu": "https://chatreabi.ir/menu.html"
+}
+</script>
   </head>
-  <body class="brand-body">
-    <div class="checker-field" aria-hidden="true"></div>
-    <a class="skip-link" href="#menu">رفتن به منو</a>
-
-    <header class="top-bar">
-      <div class="top-bar-inner">
-        <a class="top-logo" href="#top">
-          <img src="assets/logo.png" width="200" height="76" alt="Blue Umbrella Restaurant — رستوران چتر آبی" />
+  <body>
+    <a class="skip-link" href="#featured">رفتن به محتوای اصلی</a>
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="logo-link" href="index.html">
+          <img src="images/logo.png" width="120" height="46" alt="لوگوی رستوران چتر آبی" />
+          <span class="logo-text">چتر آبی</span>
         </a>
-        <nav class="top-nav" aria-label="میانبرها">
-          <a href="#menu">منو</a>
-          <a href="#footer-contact">تماس</a>
+        <button type="button" class="nav-toggle" aria-expanded="false" aria-controls="site-nav" aria-label="باز و بسته کردن منو">
+          <span></span><span></span><span></span>
+        </button>
+        <nav class="site-nav" id="site-nav" aria-label="منوی اصلی">
+          <ul>
+            <li><a href="index.html" aria-current="page">صفحه اصلی</a></li>
+            <li><a href="about.html">درباره ما</a></li>
+            <li><a href="menu.html">منو</a></li>
+            <li><a href="gallery.html">گالری تصاویر</a></li>
+            <li><a href="contact.html">تماس با ما</a></li>
+          </ul>
         </nav>
-        <a class="top-call" href="tel:+984133312437">
-          <span class="top-call-label">رزرو</span>
-          <span class="top-call-num" dir="ltr">041 3331 2437</span>
-        </a>
+        <a class="btn btn-primary header-cta" href="menu.html">مشاهده منو</a>
       </div>
     </header>
 
-    <section class="hero-ring" id="top" aria-labelledby="hero-heading">
-      <div class="hero-ring-outer">
-        <div class="hero-ring-inner">
-          <img
-            class="hero-logo"
-            src="assets/logo.png"
-            width="280"
-            height="106"
-            alt=""
-            aria-hidden="true"
-          />
-          <h1 id="hero-heading" class="hero-title-fa">رستوران چتر آبی</h1>
-          <p class="hero-en"><span class="hero-blue">Blue</span> <span class="hero-script">Umbrella</span></p>
-          <p class="hero-note">
-            ضمن خیر مقدم؛ <strong>کلیه قیمت‌ها به تومان</strong> است. منو را مرور کنید یا برای رزرو تماس
-            بگیرید.
-          </p>
-          <a class="hero-menu-cta" href="#menu">
-            <span>ورود به منو</span>
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
-              <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2.5" fill="none" stroke-linecap="round" />
-            </svg>
-          </a>
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <div class="hero-bg">
+          <img src="images/food/omelet-darbary.jpg" alt="املت درباری — رستوران چتر آبی" width="1600" height="900" fetchpriority="high" />
+          <div class="hero-overlay"></div>
         </div>
-      </div>
-      <aside class="hero-contact-card" aria-label="تماس سریع">
-        <p class="hero-contact-kicker">رزرو و پرسش</p>
-        <a class="contact-tile contact-tile-phone" href="tel:+984133312437">
-          <span>تلفن ۱</span>
-          <strong dir="ltr">041-33312437</strong>
-        </a>
-        <a class="contact-tile contact-tile-phone" href="tel:+984133297177">
-          <span>تلفن ۲</span>
-          <strong dir="ltr">041-33297177</strong>
-        </a>
-        <a
-          class="contact-tile contact-tile-wa"
-          href="https://wa.me/989122794809"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <span>واتساپ</span>
-          <strong>پیام فوری</strong>
-        </a>
-      </aside>
-    </section>
-
-    <main class="menu-stage" id="menu" aria-labelledby="menu-heading">
-      <div class="menu-stage-layout">
-        <aside class="menu-rail" aria-label="فیلتر منو">
-          <h2 id="menu-heading" class="menu-rail-title">منو</h2>
-          <p class="menu-rail-hint">دسته را انتخاب کنید</p>
-          <div class="rail-filters" role="tablist">
-            <button type="button" class="rail-filter is-active" data-category="all" role="tab" aria-selected="true">
-              همه
-            </button>
-            <button type="button" class="rail-filter" data-category="breakfast" role="tab" aria-selected="false">
-              صبحانه
-            </button>
-            <button type="button" class="rail-filter" data-category="iranian" role="tab" aria-selected="false">
-              غذای ایرانی
-            </button>
-            <button type="button" class="rail-filter" data-category="kebab" role="tab" aria-selected="false">
-              کباب
-            </button>
-            <button type="button" class="rail-filter" data-category="appetizer" role="tab" aria-selected="false">
-              پیش‌غذا
-            </button>
-            <button type="button" class="rail-filter" data-category="drinks" role="tab" aria-selected="false">
-              نوشیدنی
-            </button>
+        <div class="container hero-content">
+          <h1 id="hero-title">طعم اصیل غذاهای ایرانی در رستوران چتر آبی</h1>
+          <p class="hero-lead">با مجموعه‌ای از غذاهای ایرانی، کباب‌های لذیذ و صبحانه‌های متنوع، لحظاتی خوشمزه و به‌یادماندنی را تجربه کنید.</p>
+          <div class="hero-actions">
+            <a class="btn btn-gold" href="menu.html">مشاهده منو</a>
+            <a class="btn btn-secondary" href="contact.html">تماس با ما</a>
           </div>
-          <div class="rail-contact">
-            <p>سوال دارید؟</p>
-            <a href="tel:+984133312437" dir="ltr">041 3331 2437</a>
-          </div>
-        </aside>
-
-        <div class="menu-main">
-          <div class="menu-toolbar">
-            <label class="search-field">
-              <span class="sr-only">جستجو در منو</span>
-              <input
-                type="search"
-                id="menu-search"
-                placeholder="جستجو در منو..."
-                autocomplete="off"
-              />
-            </label>
-            <p class="menu-result-count" id="menu-count" aria-live="polite"></p>
-          </div>
-          <div class="menu-sheet" id="menu-grid"></div>
-          <p class="menu-empty" id="menu-empty" hidden>چیزی با این جستجو پیدا نشد.</p>
         </div>
-      </div>
+      </section>
+
+      <section class="section" aria-labelledby="intro-title">
+        <div class="container split reveal">
+          <div>
+            <h2 id="intro-title">به چتر آبی خوش آمدید</h2>
+            <p>رستوران چتر آبی منویی متنوع از <strong>صبحانه</strong>، <strong>غذای ایرانی</strong>، <strong>کباب</strong>، <strong>پیش‌غذا و دسر</strong> و <strong>نوشیدنی</strong> را در اختیار شما قرار می‌دهد. منوی دیجیتال ما بر پایهٔ اطلاعات رسمی رستوران به‌روز شده است؛ <strong>کلیه قیمت‌ها به تومان</strong> است.</p>
+            <p style="color:var(--muted);font-size:0.92rem;">[متن تکمیلی درباره فضا و تاریخچه — پس از تأیید مدیریت رستوران درج شود.]</p>
+            <a class="btn btn-primary" href="about.html" style="margin-top:1rem;">آشنایی با ما</a>
+          </div>
+          <div class="split-media">
+            <img src="images/food/iranian-plate.jpg" alt="بشقاب صبحانه ایرانی در رستوران چتر آبی" width="800" height="600" loading="lazy" />
+          </div>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="featured" aria-labelledby="cats-title">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 id="cats-title">دسته‌های منو</h2>
+            <p>از صبحانه گرفته تا شام؛ دستهٔ مورد نظر را انتخاب کنید.</p>
+          </div>
+          <div class="card-grid reveal">
+            <article class="category-card">
+              <a href="menu.html#cat-breakfast">
+                <img src="assets/icons/breakfast.png" alt="صبحانه" width="400" height="300" loading="lazy" />
+                <div class="category-card-body">
+                  <h3>صبحانه</h3>
+                  <p>املت، نیمرو و بشقاب‌های متنوع</p>
+                </div>
+              </a>
+            </article>
+            <article class="category-card">
+              <a href="menu.html#cat-iranian">
+                <img src="assets/icons/food.png" alt="غذای ایرانی" width="400" height="300" loading="lazy" />
+                <div class="category-card-body">
+                  <h3>غذای ایرانی</h3>
+                  <p>برنج، خورشت و خوراک‌های سنتی</p>
+                </div>
+              </a>
+            </article>
+            <article class="category-card">
+              <a href="menu.html#cat-kebab">
+                <img src="images/food/baghali-mahiche.jpg" alt="کباب و چلو" width="400" height="300" loading="lazy" />
+                <div class="category-card-body">
+                  <h3>کباب‌ها</h3>
+                  <p>جوجه، کوبیده، برگ و کباب تابه‌ای</p>
+                </div>
+              </a>
+            </article>
+            <article class="category-card">
+              <a href="menu.html#cat-appetizer">
+                <img src="assets/icons/dessert_2.png" alt="پیش‌غذا و دسر" width="400" height="300" loading="lazy" />
+                <div class="category-card-body">
+                  <h3>پیش‌غذا و دسر</h3>
+                  <p>پیش‌غذا، سوپ، سالاد و مخلفات</p>
+                </div>
+              </a>
+            </article>
+            <article class="category-card">
+              <a href="menu.html#cat-drinks">
+                <img src="assets/icons/drink.png" alt="نوشیدنی" width="400" height="300" loading="lazy" />
+                <div class="category-card-body">
+                  <h3>نوشیدنی</h3>
+                  <p>نوشابه، دوغ، چای و نوشیدنی‌های سرد</p>
+                </div>
+              </a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" aria-labelledby="dishes-title">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 id="dishes-title">پیشنهاد از منو</h2>
+            <p>برخی از محبوب‌ترین انتخاب‌ها با قیمت به‌روز از منوی رسمی.</p>
+          </div>
+          <div class="card-grid reveal">
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="images/food/omelet-darbary.jpg" alt="املت درباری" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">صبحانه</span>
+                  <h3>املت درباری</h3>
+                  <p class="dish-desc">تخم مرغ، گوجه، پنیر گودا، ژامبون، قارچ و دورچین</p>
+                  <div class="dish-meta"><span class="dish-price">۴۲۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="images/food/qisawa.jpg" alt="قیساوا" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">صبحانه</span>
+                  <h3>قیساوا</h3>
+                  <p class="dish-desc">تخم مرغ، خرما، دارچین و مغزهای خوراکی</p>
+                  <div class="dish-meta"><span class="dish-price">۳۵۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="images/food/baghali-mahiche.jpg" alt="باقالی پلو با ماهیچه" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">غذای ایرانی</span>
+                  <h3>باقالی پلو با ماهیچه</h3>
+                  <div class="dish-meta"><span class="dish-price">۱٬۸۵۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="images/food/zereshk-polo.jpg" alt="زرشک پلو مخصوص" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">غذای ایرانی</span>
+                  <h3>زرشک پلو مخصوص ران</h3>
+                  <div class="dish-meta"><span class="dish-price">۶۹۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="images/food/ghormeh.jpg" alt="چلو جوجه کباب" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">کباب</span>
+                  <h3>چلو جوجه کباب مخصوص</h3>
+                  <p class="dish-desc">۳۰۰ گرم</p>
+                  <div class="dish-meta"><span class="dish-price">۹۰۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+            <article class="dish-card">
+              <div class="dish-card-inner">
+                <img src="https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg" alt="کشک بادمجان" loading="lazy" />
+                <div class="dish-card-body">
+                  <span class="dish-tag">پیش‌غذا</span>
+                  <h3>کشک بادمجان</h3>
+                  <div class="dish-meta"><span class="dish-price">۴۰۰٬۰۰۰ <span class="unit">تومان</span></span></div>
+                </div>
+              </div>
+            </article>
+          </div>
+          <p style="text-align:center;margin-top:2rem;"><a class="btn btn-primary" href="menu.html">مشاهده همه غذاها</a></p>
+        </div>
+      </section>
+
+      <section class="section section-alt" aria-labelledby="why-title">
+        <div class="container">
+          <div class="section-head reveal">
+            <h2 id="why-title">چرا منوی چتر آبی؟</h2>
+          </div>
+          <div class="features reveal">
+            <div class="feature">
+              <h3>تنوع غذاهای ایرانی</h3>
+              <p>از خورشت و ته‌چین تا برنج و خوراک؛ انتخاب‌های متنوع برای وعدهٔ اصلی.</p>
+            </div>
+            <div class="feature">
+              <h3>صبحانه‌های متنوع</h3>
+              <p>املت، نیمرو، بشقاب ایرانی و خوراک‌های صبحانه در یک منو.</p>
+            </div>
+            <div class="feature">
+              <h3>کباب و چلو</h3>
+              <p>کباب‌های مخصوص و نیمه‌مخصوص با جزئیات وزن در منو.</p>
+            </div>
+            <div class="feature">
+              <h3>نوشیدنی و پیش‌غذا</h3>
+              <p>پیش‌غذا، سوپ، سالاد و نوشیدنی در کنار غذای اصلی.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="container reveal">
+          <div class="cta-band">
+            <h2>برای یک تجربه خوشمزه آماده‌اید؟</h2>
+            <p>منوی چتر آبی را ببینید و غذای موردعلاقه‌تان را انتخاب کنید.</p>
+            <div class="hero-actions" style="justify-content:center;">
+              <a class="btn btn-gold" href="menu.html">مشاهده منو</a>
+              <a class="btn btn-secondary" href="contact.html">تماس با ما</a>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
-
-    <footer class="site-footer" id="footer-contact">
-      <div class="footer-ring">
-        <img src="assets/logo.png" width="220" height="84" alt="رستوران چتر آبی" class="footer-logo" />
-        <p class="footer-tagline">رستوران چتر آبی · Blue Umbrella Restaurant</p>
-        <div class="footer-phones">
-          <a href="tel:+984133312437" dir="ltr">041 3331 2437</a>
-          <span class="footer-dot" aria-hidden="true"></span>
-          <a href="tel:+984133297177" dir="ltr">041 3329 7177</a>
+    <footer class="site-footer">
+      <div class="container">
+        <div class="footer-grid">
+          <div class="footer-brand">
+            <img src="images/logo.png" width="140" height="53" alt="رستوران چتر آبی" loading="lazy" />
+            <p>رستوران چتر آبی؛ منوی غذاهای ایرانی، صبحانه، کباب و نوشیدنی. کلیه قیمت‌های منو به تومان است.</p>
+          </div>
+          <div class="footer-col">
+            <h3>دسترسی سریع</h3>
+            <ul>
+              <li><a href="index.html">صفحه اصلی</a></li>
+              <li><a href="about.html">درباره ما</a></li>
+              <li><a href="menu.html">منوی رستوران</a></li>
+              <li><a href="gallery.html">گالری تصاویر</a></li>
+              <li><a href="contact.html">تماس با ما</a></li>
+            </ul>
+          </div>
+          <div class="footer-col">
+            <h3>تماس</h3>
+            <ul>
+              <li><a href="tel:+984133312437" dir="ltr">۰۴۱ ۳۳۳۱ ۲۴۳۷</a></li>
+              <li><a href="tel:+984133297177" dir="ltr">۰۴۱ ۳۳۲۹ ۷۱۷۷</a></li>
+              <li><a href="https://wa.me/989122794809" rel="noopener noreferrer" target="_blank">واتساپ</a></li>
+            </ul>
+            <!-- PLACEHOLDER_ADDRESS: آدرس و ساعات کار پس از تأیید مدیریت درج شود -->
+            <p class="placeholder-note" style="margin-top:0.75rem;font-size:0.8rem;">آدرس و ساعات کار: در حال تکمیل — لطفاً پیش از مراجعه تماس بگیرید.</p>
+          </div>
         </div>
-        <div class="footer-actions">
-          <a class="footer-btn footer-btn-call" href="tel:+984133312437">تماس برای رزرو</a>
-          <a
-            class="footer-btn footer-btn-wa"
-            href="https://wa.me/989122794809"
-            target="_blank"
-            rel="noopener noreferrer"
-            >واتساپ</a
-          >
+        <div class="footer-bottom">
+          <span>© <span id="year"></span> رستوران چتر آبی</span>
+          <div class="footer-legal">
+            <a href="privacy-policy.html">حریم خصوصی</a>
+            <a href="disclaimer.html">سلب مسئولیت</a>
+            <a href="terms.html">قوانین استفاده</a>
+          </div>
         </div>
-        <p class="footer-copy">© <span id="year"></span> رستوران چتر آبی · <a href="https://chatreabi.ir/">chatreabi.ir</a></p>
       </div>
     </footer>
-
-    <nav class="dock" aria-label="میانبر تماس و منو">
-      <a class="dock-item dock-menu is-primary" href="#menu">
-        <span>منو</span>
-      </a>
-      <a class="dock-item dock-call" href="tel:+984133312437">
-        <span>تماس</span>
-        <small dir="ltr">041</small>
-      </a>
-      <a
-        class="dock-item dock-wa"
-        href="https://wa.me/989122794809"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <span>واتساپ</span>
-      </a>
-    </nav>
-
-    <script src="js/menu-data.js" defer></script>
-    <script src="js/app.js" defer></script>
+    <script src="script.js" defer></script>
   </body>
 </html>

@@ -1,44 +1,56 @@
-# رستوران چتر آبی — منوی دیجیتال
+# رستوران چتر آبی — وب‌سایت
 
-نسخهٔ بازطراحی‌شدهٔ منوی دیجیتال رستوران چتر آبی: سایت استاتیک، سریع، و مناسب موبایل با جستجو و فیلتر دسته‌ها.
+وب‌سایت استاتیک، واکنش‌گرا و فارسی (RTL) برای **رستوران چتر آبی** با صفحات اصلی، درباره ما، منوی کامل با قیمت به تومان، گالری، تماس و صفحات حقوقی.
 
-## ویژگی‌ها
+## ساختار
 
-- طراحی مدرن RTL با تایپوگرافی مناسب فارسی
-- منوی کامل (۸۲ آیتم) با قیمت به تومان
-- جستجو و فیلتر دسته (صبحانه، ایرانی، کباب، پیش‌غذا، نوشیدنی)
-- دکمه تماس و واتساپ
-- استقرار خودکار روی GitHub Pages
+| فایل | توضیح |
+|------|--------|
+| `index.html` | صفحه اصلی |
+| `about.html` | درباره ما |
+| `menu.html` | منوی رستوران |
+| `gallery.html` | گالری تصاویر |
+| `contact.html` | تماس |
+| `privacy-policy.html` | حریم خصوصی |
+| `disclaimer.html` | سلب مسئولیت |
+| `terms.html` | قوانین استفاده |
+| `style.css` | استایل مشترک |
+| `script.js` | منوی داده + تعاملات |
+| `images/` | لوگو، فونت و تصاویر محلی |
+
+دادهٔ منو در انتهای `script.js` (ثابت `MENU_DATA`) بر اساس [chatreabi.ir](https://chatreabi.ir/) است.
 
 ## توسعه محلی
 
 ```bash
-cd /path/to/ChatreAbiMenu
 python3 -m http.server 8080
 ```
 
-سپس در مرورگر: `http://localhost:8080`
+سپس: `http://localhost:8080`
+
+## به‌روزرسانی صفحات HTML
+
+قالب مشترک در `tools/build_pages.py` است:
+
+```bash
+python3 tools/build_pages.py
+```
+
+پس از تغییر `script-core.js`:
+
+```bash
+sed 's/window.MENU_DATA = /const MENU_DATA = /' js/menu-data.js > /tmp/menu-data-const.js
+cat script-core.js /tmp/menu-data-const.js > script.js
+```
+
+(یا `js/menu-data.js` را مستقیماً ویرایش و دوباره به `script.js` الحاق کنید.)
 
 ## GitHub Pages
 
-1. پس از push به `main`، workflow محتوا را به شاخهٔ **`gh-pages`** منتشر می‌کند.
-2. در مخزن GitHub به **Settings → Pages** بروید.
-3. **Build and deployment → Source**: Deploy from a branch.
-4. **Branch**: `gh-pages` / **`/ (root)`** → Save.
-5. آدرس سایت: `https://itsaligadimi.github.io/ChatreAbiMenu/` (پس از چند دقیقه).
+پس از push به `main`، workflow محتوا را به شاخه **`gh-pages`** منتشر می‌کند.
 
-### دامنه سفارشی (chatreabi.ir)
+## نکات محتوا
 
-برای اتصال دامنهٔ قبلی، در تنظیمات Pages دامنه را وارد کنید و در DNS رکورد `CNAME` را به `<username>.github.io` اشاره دهید.
-
-## ساختار
-
-- `index.html` — صفحه اصلی
-- `css/styles.css` — استایل‌ها
-- `js/menu-data.js` — داده منو
-- `js/app.js` — رندر منو، فیلتر و جستجو
-- `design-system/chatre-abi/` — سیستم طراحی (ui-ux-pro-max)
-
-## به‌روزرسانی منو
-
-دادهٔ منو از سایت قبلی استخراج شده است. برای به‌روزرسانی، `js/menu-data.js` را ویرایش کنید یا اسکریپت استخراج را دوباره اجرا کنید.
+- **تلفن‌های تأییدشده:** `041-33312437` و `041-33297177` (مطابق سایت قبلی)
+- **آدرس و ساعات کار:** در `contact.html` و فوتر به‌صورت placeholder — پس از تأیید مدیریت تکمیل شود.
+- اقلام بدون قیمت در منوی رسمی با برچسب «نیاز به بررسی» نمایش داده می‌شوند.
