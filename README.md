@@ -1,62 +1,20 @@
-# رستوران چتر آبی — وب‌سایت
+# رستوران چتر آبی
 
-وب‌سایت استاتیک، واکنش‌گرا و فارسی (RTL) برای **رستوران چتر آبی** با صفحات اصلی، درباره ما، منوی کامل با قیمت به تومان، گالری، تماس و صفحات حقوقی.
+صفحهٔ تک‌صفحه‌ای (Hero · منو · تماس) برای رستوران چتر آبی.
 
-## ساختار
-
-| فایل | توضیح |
-|------|--------|
-| `index.html` | صفحه اصلی |
-| `about.html` | درباره ما |
-| `menu.html` | منوی رستوران |
-| `gallery.html` | گالری تصاویر |
-| `contact.html` | تماس |
-| `privacy-policy.html` | حریم خصوصی |
-| `disclaimer.html` | سلب مسئولیت |
-| `terms.html` | قوانین استفاده |
-| `style.css` | استایل مشترک |
-| `script.js` | منوی داده + تعاملات |
-| `images/` | لوگو، فونت و تصاویر محلی |
-
-دادهٔ منو در انتهای `script.js` (ثابت `MENU_DATA`) بر اساس [chatreabi.ir](https://chatreabi.ir/) است.
-
-## توسعه محلی
+## اجرای محلی
 
 ```bash
 python3 -m http.server 8080
 ```
 
-سپس: `http://localhost:8080`
+برای GitHub Pages: https://itsaligadimi.github.io/ChatreAbiMenu/
 
-## به‌روزرسانی صفحات HTML
+تنظیمات Pages: شاخه **`main`**، پوشه **`/ (root)`**.
 
-قالب مشترک در `tools/build_pages.py` است:
+## فایل‌ها
 
-```bash
-python3 tools/build_pages.py
-# برای تست محلی بدون پیشوند GitHub Pages:
-PAGES_BASE=/ SITE_URL=http://localhost:8080 python3 tools/build_pages.py
-```
-
-پس از تغییر `script-core.js`:
-
-```bash
-sed 's/window.MENU_DATA = /const MENU_DATA = /' js/menu-data.js > /tmp/menu-data-const.js
-cat script-core.js /tmp/menu-data-const.js > script.js
-```
-
-(یا `js/menu-data.js` را مستقیماً ویرایش و دوباره به `script.js` الحاق کنید.)
-
-## GitHub Pages
-
-**آدرس:** https://itsaligadimi.github.io/ChatreAbiMenu/
-
-در **Settings → Pages** منبع را **Deploy from a branch** قرار دهید: شاخه **`main`**، پوشه **`/ (root)`**. فایل `.nojekyll` در ریشه لازم است.
-
-اگر منبع روی `gh-pages` یا **GitHub Actions** است ولی workflow مربوطه ندارید، سایت خالی می‌ماند — منبع را به **`main`** تغییر دهید.
-
-## نکات محتوا
-
-- **تلفن‌های تأییدشده:** `041-33312437` و `041-33297177` (مطابق سایت قبلی)
-- **آدرس و ساعات کار:** در `contact.html` و فوتر به‌صورت placeholder — پس از تأیید مدیریت تکمیل شود.
-- اقلام بدون قیمت در منوی رسمی با برچسب «نیاز به بررسی» نمایش داده می‌شوند.
+- `index.html` — ساختار سه بخش
+- `style.css` — استایل
+- `script.js` — پارالاکس هیرو + منو (داده در انتهای فایل)
+- `js/menu-data.js` — منبع داده منو (برای به‌روزرسانی، سپس دوباره به `script.js` الحاق کنید)
