@@ -128,9 +128,18 @@ button {
   font-size: 0.95rem;
 }
 
-.topbar-logo img {
-  height: 2rem;
-  width: auto;
+.logo-img {
+  height: auto;
+  width: clamp(5.5rem, 22vw, 7.5rem);
+  max-height: 3.25rem;
+  object-fit: contain;
+}
+
+.logo-img-foot {
+  width: clamp(6rem, 28vw, 9rem);
+  max-height: 4.5rem;
+  margin-inline: auto;
+  filter: brightness(1.05);
 }
 
 .topbar-nav {
