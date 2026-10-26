@@ -3,6 +3,7 @@
 (function () {
   const REVIEW_TEXT = "استعلام قیمت روز";
   const FALLBACK_IMG = "images/food/baghali-mahiche-pro.jpg";
+  const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   const items = Array.isArray(window.MENU_DATA) ? window.MENU_DATA : [];
   const itemById = new Map(items.map((item, idx) => [item.id || `item-${idx}`, item]));
@@ -32,7 +33,7 @@
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
-  /* ─── 1. Smooth Scroll & Topbar State ─── */
+  /* ─── 1. Smooth Scroll, Scroll Progress & Scroll-Driven Hero Physics ─── */
   document.querySelectorAll("[data-scroll]").forEach((el) => {
     el.addEventListener("click", () => {
       const id = el.getAttribute("data-scroll");
@@ -42,13 +43,52 @@
   });
 
   const topbar = document.getElementById("topbar");
-  if (topbar) {
-    window.addEventListener(
-      "scroll",
-      () => topbar.classList.toggle("is-scrolled", window.scrollY > 20),
-      { passive: true }
+  const scrollProgressBar = document.getElementById("scroll-progress-bar");
+  const heroStage = document.getElementById("hero-stage");
+  const orbitalPlates = document.getElementById("orbital-plates");
+
+  let lastScrollY = window.scrollY;
+  let scrollVelocity = 0;
+  let orbitAngleOffset = 0;
+
+  const updateScrollEffects = () => {
+    const y = window.scrollY;
+    const maxScroll = Math.max(
+      document.documentElement.scrollHeight - window.innerHeight,
+      1
     );
-  }
+    const progress = Math.min(Math.max(y / maxScroll, 0), 1);
+
+    if (topbar) {
+      topbar.classList.toggle("is-scrolled", y > 20);
+    }
+    if (scrollProgressBar) {
+      scrollProgressBar.style.setProperty("--scroll-progress", progress.toFixed(4));
+    }
+
+    if (!prefersReducedMotion) {
+      const heroRatio = Math.min(y / 520, 1);
+      if (heroStage) {
+        heroStage.style.setProperty("--cloche-lift", `${(heroRatio * 42).toFixed(1)}px`);
+        heroStage.style.setProperty("--cloche-scale", (1 + heroRatio * 0.08).toFixed(3));
+        heroStage.style.setProperty("--cloche-fade", (heroRatio * 0.85).toFixed(3));
+      }
+
+      const dy = y - lastScrollY;
+      scrollVelocity = dy * 0.14;
+      orbitAngleOffset = (orbitAngleOffset + scrollVelocity) % 360;
+      if (orbitalPlates) {
+        orbitalPlates.style.setProperty(
+          "--orbit-offset",
+          `${(y * 0.045).toFixed(2)}deg`
+        );
+      }
+    }
+    lastScrollY = y;
+  };
+
+  window.addEventListener("scroll", updateScrollEffects, { passive: true });
+  updateScrollEffects();
 
   /* ─── 2. Theme Toggle (Light Marble / Royal Dark) ─── */
   const themeToggle = document.getElementById("theme-toggle");
@@ -64,9 +104,10 @@
     localStorage.setItem("chatreabi-theme", next);
   });
 
-  /* ─── 3. Interactive Hero Orbital Stage ─── */
+  /* ─── 3. Interactive Hero Orbital Stage + 3D Platter Tilt ─── */
   const orbitButtons = Array.from(document.querySelectorAll(".orbit-plate"));
   const heroMainPlate = document.getElementById("hero-main-plate");
+  const stageTurntable = document.getElementById("stage-turntable");
   const heroActiveImg = document.getElementById("hero-active-img");
   const heroPhotoBadge = document.getElementById("hero-photo-badge");
   const heroDishTag = document.getElementById("hero-dish-tag");
@@ -75,11 +116,54 @@
   const heroDishPrice = document.getElementById("hero-dish-price");
   const heroAddBtn = document.getElementById("hero-add-btn");
   const heroCompareBtn = document.getElementById("hero-compare-btn");
-  const heroStage = document.getElementById("hero-stage");
 
   let activeHeroId = "ir-baghali-mahiche";
   let heroShowingOriginal = false;
   let heroAutoTimer = null;
+
+  /* 3D Perspective Tilt & Specular Glare on the Hero Platter */
+  if (!prefersReducedMotion && stageTurntable && heroMainPlate) {
+    let targetTiltX = 0;
+    let targetTiltY = 0;
+    let currentTiltX = 0;
+    let currentTiltY = 0;
+    let tiltRaf = null;
+
+    const animateTilt = () => {
+      currentTiltX += (targetTiltX - currentTiltX) * 0.14;
+      currentTiltY += (targetTiltY - currentTiltY) * 0.14;
+      heroMainPlate.style.setProperty("--tilt-x", `${currentTiltX.toFixed(2)}deg`);
+      heroMainPlate.style.setProperty("--tilt-y", `${currentTiltY.toFixed(2)}deg`);
+
+      if (
+        Math.abs(targetTiltX - currentTiltX) > 0.05 ||
+        Math.abs(targetTiltY - currentTiltY) > 0.05
+      ) {
+        tiltRaf = requestAnimationFrame(animateTilt);
+      } else {
+        tiltRaf = null;
+      }
+    };
+
+    stageTurntable.addEventListener("pointermove", (e) => {
+      const rect = stageTurntable.getBoundingClientRect();
+      const nx = (e.clientX - rect.left) / rect.width - 0.5;
+      const ny = (e.clientY - rect.top) / rect.height - 0.5;
+      targetTiltX = -ny * 14;
+      targetTiltY = nx * 14;
+      heroMainPlate.style.setProperty("--glare-x", `${((nx + 0.5) * 100).toFixed(1)}%`);
+      heroMainPlate.style.setProperty("--glare-y", `${((ny + 0.5) * 100).toFixed(1)}%`);
+      if (!tiltRaf) tiltRaf = requestAnimationFrame(animateTilt);
+    });
+
+    stageTurntable.addEventListener("pointerleave", () => {
+      targetTiltX = 0;
+      targetTiltY = 0;
+      heroMainPlate.style.setProperty("--glare-x", "30%");
+      heroMainPlate.style.setProperty("--glare-y", "25%");
+      if (!tiltRaf) tiltRaf = requestAnimationFrame(animateTilt);
+    });
+  }
 
   const updateHeroStage = (dishId, animate = true) => {
     const dish = itemById.get(dishId);
@@ -117,7 +201,10 @@
     }
     if (heroDishTag) heroDishTag.textContent = dish.badge || dish.section || "ویژه چتر آبی";
     if (heroDishTitle) heroDishTitle.textContent = dish.title;
-    if (heroDishDesc) heroDishDesc.textContent = dish.desc || "پخت روزانه با مواد اولیه تازه در رستوران چتر آبی";
+    if (heroDishDesc) {
+      heroDishDesc.textContent =
+        dish.desc || "پخت روزانه با مواد اولیه تازه در رستوران چتر آبی";
+    }
     if (heroDishPrice) {
       const p = formatPrice(dish.price);
       heroDishPrice.innerHTML = p ? `${escapeHtml(p)} <small>تومان</small>` : REVIEW_TEXT;
@@ -150,13 +237,16 @@
     }
   });
 
-  heroAddBtn?.addEventListener("click", () => {
+  heroAddBtn?.addEventListener("click", (e) => {
     const id = heroAddBtn.dataset.id;
-    if (id) addToTray(id, 1);
+    if (id) {
+      launchFlyToTray(heroActiveImg || e.currentTarget, itemById.get(id)?.image);
+      addToTray(id, 1);
+    }
   });
 
   const startHeroCycle = () => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (prefersReducedMotion) return;
     stopHeroCycle();
     heroAutoTimer = setInterval(() => {
       if (heroShowingOriginal) return;
@@ -178,17 +268,80 @@
   heroStage?.addEventListener("mouseleave", startHeroCycle);
   startHeroCycle();
 
-  /* ─── 4. Chef's Signature Showcase (Featured Grid) ─── */
+  /* ─── 4. Saffron & Warm Aroma Particle Canvas in Hero ─── */
+  const initHeroParticles = () => {
+    const canvas = document.getElementById("hero-particles-canvas");
+    if (!canvas || prefersReducedMotion) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let w = 0;
+    let h = 0;
+    const resize = () => {
+      const rect = canvas.parentElement?.getBoundingClientRect();
+      w = canvas.width = rect ? rect.width : window.innerWidth;
+      h = canvas.height = rect ? rect.height : 700;
+    };
+    resize();
+    window.addEventListener("resize", resize, { passive: true });
+
+    const count = 26;
+    const particles = Array.from({ length: count }, () => ({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      r: 1.4 + Math.random() * 2.6,
+      vy: -(0.22 + Math.random() * 0.45),
+      vx: (Math.random() - 0.5) * 0.35,
+      alpha: 0.15 + Math.random() * 0.45,
+      phase: Math.random() * Math.PI * 2,
+      gold: Math.random() > 0.35,
+    }));
+
+    let heroVisible = true;
+    const obs = new IntersectionObserver(
+      (entries) => {
+        heroVisible = entries[0]?.isIntersecting ?? true;
+      },
+      { threshold: 0.05 }
+    );
+    obs.observe(canvas);
+
+    const draw = () => {
+      if (heroVisible) {
+        ctx.clearRect(0, 0, w, h);
+        particles.forEach((p) => {
+          p.phase += 0.018;
+          p.y += p.vy;
+          p.x += p.vx + Math.sin(p.phase) * 0.25;
+          if (p.y < -10) {
+            p.y = h + 10;
+            p.x = Math.random() * w;
+          }
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+          ctx.fillStyle = p.gold
+            ? `rgba(217, 164, 54, ${p.alpha})`
+            : `rgba(91, 200, 242, ${p.alpha * 0.85})`;
+          ctx.fill();
+        });
+      }
+      requestAnimationFrame(draw);
+    };
+    requestAnimationFrame(draw);
+  };
+  initHeroParticles();
+
+  /* ─── 5. Chef's Signature Showcase (Featured Grid) ─── */
   const featuredGrid = document.getElementById("featured-grid");
   const modeStudioBtn = document.getElementById("mode-studio-btn");
   const modeOriginalBtn = document.getElementById("mode-original-btn");
-  let featuredPhotoMode = "studio"; // "studio" | "original"
+  let featuredPhotoMode = "studio";
 
   const renderFeatured = () => {
     if (!featuredGrid) return;
     const featuredItems = items.filter((item) => item.featured);
     featuredGrid.innerHTML = featuredItems
-      .map((item) => {
+      .map((item, idx) => {
         const imgSrc =
           featuredPhotoMode === "original" && item.originalImage
             ? item.originalImage
@@ -199,7 +352,7 @@
           : `<span class="featured-price">${REVIEW_TEXT}</span>`;
 
         return `
-          <article class="featured-card" data-dish-id="${escapeHtml(item.id)}">
+          <article class="featured-card reveal-on-scroll" style="transition-delay: ${Math.min(idx * 55, 300)}ms" data-dish-id="${escapeHtml(item.id)}">
             <div class="featured-media" data-open-modal="${escapeHtml(item.id)}">
               <img
                 src="${escapeHtml(imgSrc)}"
@@ -208,7 +361,7 @@
                 onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"
               />
               <span class="featured-badge-top">${escapeHtml(item.badge || item.section)}</span>
-              <span class="featured-zoom-hint">بزرگ‌نمایی و مقایسه 🔎</span>
+              <span class="featured-zoom-hint">مقایسه زنده با اسلایدر ↔</span>
             </div>
             <div class="featured-body">
               <h3 class="featured-title">${escapeHtml(item.title)}</h3>
@@ -224,6 +377,8 @@
         `;
       })
       .join("");
+
+    observeScrollReveals();
   };
 
   modeStudioBtn?.addEventListener("click", () => {
@@ -240,7 +395,7 @@
     renderFeatured();
   });
 
-  /* ─── 5. Complete Digital Menu Filtering, Sorting & Rendering ─── */
+  /* ─── 6. Complete Digital Menu + Gliding Category Pill + Scroll-Spy ─── */
   const board = document.getElementById("menu-board");
   const emptyEl = document.getElementById("menu-empty");
   const searchInput = document.getElementById("menu-search");
@@ -249,6 +404,8 @@
   const sortSelect = document.getElementById("menu-sort");
   const resetFiltersBtn = document.getElementById("reset-filters-btn");
   const summaryEl = document.getElementById("menu-result-summary");
+  const menuTabsWrap = document.getElementById("menu-tabs");
+  const tabGlider = document.getElementById("tab-glider");
   const tabs = Array.from(document.querySelectorAll(".menu-tab"));
   const viewButtons = Array.from(document.querySelectorAll(".view-btn"));
 
@@ -264,6 +421,39 @@
     appetizer: "پیش‌غذا، سوپ و سالاد",
     drinks: "چای و نوشیدنی‌های سرد",
   };
+
+  const moveTabGlider = (targetTab) => {
+    if (!tabGlider || !menuTabsWrap || !targetTab) return;
+    const wrapRect = menuTabsWrap.getBoundingClientRect();
+    const tabRect = targetTab.getBoundingClientRect();
+    const x = tabRect.left - wrapRect.left + menuTabsWrap.scrollLeft;
+    const y = tabRect.top - wrapRect.top;
+    tabGlider.style.setProperty("--glider-w", `${tabRect.width}px`);
+    tabGlider.style.setProperty("--glider-x", `${x}px`);
+    tabGlider.style.setProperty("--glider-y", `${y}px`);
+    tabGlider.classList.add("is-ready");
+    menuTabsWrap.classList.add("has-glider");
+  };
+
+  const highlightTabVisual = (catKey) => {
+    let matchedTab = null;
+    tabs.forEach((t) => {
+      const on = t.dataset.category === catKey;
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+      if (on) matchedTab = t;
+    });
+    if (matchedTab) moveTabGlider(matchedTab);
+  };
+
+  window.addEventListener(
+    "resize",
+    () => {
+      const currentTab = document.querySelector(".menu-tab.is-active");
+      if (currentTab) moveTabGlider(currentTab);
+    },
+    { passive: true }
+  );
 
   const updateTabCounts = () => {
     document.querySelectorAll("[data-count-for]").forEach((el) => {
@@ -315,10 +505,10 @@
     const qtyInTray = trayState.get(item.id) || 0;
     const btnLabel = qtyInTray > 0 ? `✓ در میز (${toPersianDigits(qtyInTray)})` : "+ انتخاب";
     const btnClass = qtyInTray > 0 ? "item-add-btn in-tray" : "item-add-btn";
-    const delayMs = Math.min(idx * 25, 250);
+    const delayMs = Math.min((idx % 12) * 32, 260);
 
     return `
-      <li class="menu-item-card" style="animation-delay: ${delayMs}ms">
+      <li class="menu-item-card" style="animation-delay: ${delayMs}ms" data-card-id="${escapeHtml(item.id)}">
         <button
           type="button"
           class="item-thumb-btn"
@@ -349,6 +539,32 @@
     `;
   };
 
+  let blockSpyObserver = null;
+
+  const setupCategoryScrollSpy = () => {
+    if (blockSpyObserver) blockSpyObserver.disconnect();
+    if (activeCategory !== "all") return;
+
+    const blocks = document.querySelectorAll(".menu-block[data-cat-block]");
+    if (!blocks.length) return;
+
+    blockSpyObserver = new IntersectionObserver(
+      (entries) => {
+        if (activeCategory !== "all") return;
+        const visible = entries
+          .filter((en) => en.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible.length > 0) {
+          const catKey = visible[0].target.getAttribute("data-cat-block");
+          if (catKey) highlightTabVisual(catKey);
+        }
+      },
+      { rootMargin: "-22% 0px -62% 0px", threshold: 0.05 }
+    );
+
+    blocks.forEach((b) => blockSpyObserver.observe(b));
+  };
+
   const renderMenu = () => {
     if (!board) return;
     const filtered = getFilteredItems();
@@ -375,7 +591,8 @@
       if (!catItems?.length) return;
 
       const block = document.createElement("section");
-      block.className = "menu-block";
+      block.className = "menu-block reveal-on-scroll";
+      block.setAttribute("data-cat-block", catKey);
       block.innerHTML = `
         <div class="menu-block-header">
           <h3 class="menu-block-title">${escapeHtml(CATEGORY_LABEL[catKey] || catKey)}</h3>
@@ -405,16 +622,16 @@
 
       board.appendChild(block);
     });
+
+    observeScrollReveals();
+    setupCategoryScrollSpy();
   };
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      activeCategory = tab.dataset.category || "all";
-      tabs.forEach((t) => {
-        const on = t === tab;
-        t.classList.toggle("is-active", on);
-        t.setAttribute("aria-selected", on ? "true" : "false");
-      });
+      const selectedCat = tab.dataset.category || "all";
+      activeCategory = selectedCat;
+      highlightTabVisual(selectedCat);
       renderMenu();
     });
   });
@@ -462,16 +679,13 @@
     if (searchClear) searchClear.hidden = true;
     if (featuredFilterBtn) featuredFilterBtn.setAttribute("aria-pressed", "false");
     if (sortSelect) sortSelect.value = "default";
-    tabs.forEach((t) => {
-      const on = t.dataset.category === "all";
-      t.classList.toggle("is-active", on);
-      t.setAttribute("aria-selected", on ? "true" : "false");
-    });
+    highlightTabVisual("all");
     renderMenu();
   });
 
-  /* ─── 6. Table Selection Tray ("میز من") ─── */
-  const trayState = new Map(); // id -> quantity
+  /* ─── 7. Parabolic Fly-to-Tray Physics & Rolling Toman Counter ─── */
+  const trayState = new Map();
+  const headerTrayBtn = document.getElementById("tray-open-btn");
   const headerTrayCount = document.getElementById("header-tray-count");
   const floatingTrayBar = document.getElementById("floating-tray-bar");
   const floatingTrayCount = document.getElementById("floating-tray-count");
@@ -480,6 +694,90 @@
   const trayItemsList = document.getElementById("tray-items-list");
   const trayTotalAmount = document.getElementById("tray-total-amount");
   const trayWaLink = document.getElementById("tray-wa-link");
+
+  let displayedTotalAmount = 0;
+  let tickerRaf = null;
+
+  const animatePriceTicker = (targetVal) => {
+    if (prefersReducedMotion) {
+      displayedTotalAmount = targetVal;
+      const formatted = `${targetVal.toLocaleString("fa-IR")} تومان`;
+      if (floatingTrayTotal) floatingTrayTotal.textContent = formatted;
+      if (trayTotalAmount) trayTotalAmount.textContent = formatted;
+      return;
+    }
+    if (tickerRaf) cancelAnimationFrame(tickerRaf);
+    const startVal = displayedTotalAmount;
+    const diff = targetVal - startVal;
+    const duration = 420;
+    const startTime = performance.now();
+
+    const step = (now) => {
+      const t = Math.min((now - startTime) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 3);
+      const current = Math.round(startVal + diff * eased);
+      displayedTotalAmount = current;
+      const formatted = `${current.toLocaleString("fa-IR")} تومان`;
+      if (floatingTrayTotal) floatingTrayTotal.textContent = formatted;
+      if (trayTotalAmount) trayTotalAmount.textContent = formatted;
+      if (t < 1) {
+        tickerRaf = requestAnimationFrame(step);
+      }
+    };
+    tickerRaf = requestAnimationFrame(step);
+  };
+
+  const launchFlyToTray = (sourceEl, imgSrc) => {
+    if (prefersReducedMotion || !sourceEl) return;
+    const targetEl =
+      floatingTrayBar && !floatingTrayBar.hidden ? floatingTrayBar : headerTrayBtn;
+    if (!targetEl) return;
+
+    const startRect = sourceEl.getBoundingClientRect();
+    const endRect = targetEl.getBoundingClientRect();
+
+    const clone = document.createElement("img");
+    clone.src = imgSrc || FALLBACK_IMG;
+    clone.className = "flying-plate-clone";
+    const startX = startRect.left + startRect.width / 2 - 28;
+    const startY = startRect.top + startRect.height / 2 - 28;
+    const endX = endRect.left + endRect.width / 2 - 20;
+    const endY = endRect.top + endRect.height / 2 - 20;
+
+    clone.style.left = "0px";
+    clone.style.top = "0px";
+    clone.style.transform = `translate3d(${startX}px, ${startY}px, 0) scale(1)`;
+    document.body.appendChild(clone);
+
+    const ctrlX = (startX + endX) / 2;
+    const ctrlY = Math.min(startY, endY) - 130;
+    const duration = 620;
+    const t0 = performance.now();
+
+    const tick = (now) => {
+      const t = Math.min((now - t0) / duration, 1);
+      const inv = 1 - t;
+      const x = inv * inv * startX + 2 * inv * t * ctrlX + t * t * endX;
+      const y = inv * inv * startY + 2 * inv * t * ctrlY + t * t * endY;
+      const scale = 1 - t * 0.62;
+      const rot = t * 240;
+      clone.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) scale(${scale.toFixed(2)}) rotate(${rot.toFixed(0)}deg)`;
+      clone.style.opacity = String(1 - Math.pow(t, 2.5) * 0.6);
+
+      if (t < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        clone.remove();
+        [headerTrayBtn, floatingTrayBar].forEach((el) => {
+          if (!el) return;
+          el.classList.remove("is-bouncing");
+          void el.offsetWidth;
+          el.classList.add("is-bouncing");
+        });
+      }
+    };
+    requestAnimationFrame(tick);
+  };
 
   const updateTrayUI = () => {
     let totalCount = 0;
@@ -506,12 +804,8 @@
     if (floatingTrayCount) {
       floatingTrayCount.textContent = `${toPersianDigits(totalCount)} مورد در میز انتخابی شما`;
     }
-    if (floatingTrayTotal) {
-      floatingTrayTotal.textContent = `${totalPrice.toLocaleString("fa-IR")} تومان`;
-    }
-    if (trayTotalAmount) {
-      trayTotalAmount.textContent = `${totalPrice.toLocaleString("fa-IR")} تومان`;
-    }
+
+    animatePriceTicker(totalPrice);
 
     if (trayItemsList) {
       if (totalCount === 0) {
@@ -549,7 +843,14 @@
       trayWaLink.href = `https://wa.me/989122794809?text=${encodeURIComponent(msg)}`;
     }
 
-    renderMenu();
+    /* Update button labels in-place without destroying scroll position */
+    document.querySelectorAll("[data-add-id]").forEach((btn) => {
+      if (btn.classList.contains("btn-add-mini")) return;
+      const id = btn.getAttribute("data-add-id");
+      const qty = trayState.get(id) || 0;
+      btn.textContent = qty > 0 ? `✓ در میز (${toPersianDigits(qty)})` : "+ انتخاب";
+      btn.classList.toggle("in-tray", qty > 0);
+    });
   };
 
   const addToTray = (id, delta = 1) => {
@@ -566,7 +867,14 @@
   document.addEventListener("click", (e) => {
     const addBtn = e.target.closest("[data-add-id]");
     if (addBtn) {
-      addToTray(addBtn.getAttribute("data-add-id"), 1);
+      const id = addBtn.getAttribute("data-add-id");
+      const item = itemById.get(id);
+      const card = addBtn.closest(".menu-item-card, .featured-card");
+      const thumbImg = card?.querySelector("img") || addBtn;
+      if (id) {
+        launchFlyToTray(thumbImg, item?.image);
+        addToTray(id, 1);
+      }
       return;
     }
 
@@ -595,7 +903,7 @@
     if (trayBackdrop) trayBackdrop.hidden = true;
   };
 
-  document.getElementById("tray-open-btn")?.addEventListener("click", openTrayDrawer);
+  headerTrayBtn?.addEventListener("click", openTrayDrawer);
   document.getElementById("floating-tray-open")?.addEventListener("click", openTrayDrawer);
   document.getElementById("tray-close-btn")?.addEventListener("click", closeTrayDrawer);
   document.getElementById("tray-clear-btn")?.addEventListener("click", () => {
@@ -606,9 +914,14 @@
     if (e.target === trayBackdrop) closeTrayDrawer();
   });
 
-  /* ─── 7. Dish Lightbox & Photo Comparison Modal ─── */
+  /* ─── 8. Dish Lightbox & Interactive Before/After Wipe Curtain ─── */
   const modalBackdrop = document.getElementById("dish-modal-backdrop");
+  const modalMediaStage = document.getElementById("modal-media-stage");
   const modalImg = document.getElementById("modal-dish-img");
+  const modalOrigImg = document.getElementById("modal-dish-orig-img");
+  const modalWipeOverlay = document.getElementById("modal-wipe-overlay");
+  const modalWipeHandle = document.getElementById("modal-wipe-handle");
+  const modalWipeRange = document.getElementById("modal-wipe-range");
   const modalTitle = document.getElementById("modal-dish-title");
   const modalDesc = document.getElementById("modal-dish-desc");
   const modalSection = document.getElementById("modal-dish-section");
@@ -617,19 +930,57 @@
   const modalAddBtn = document.getElementById("modal-add-btn");
   const modalCompareBar = document.getElementById("modal-compare-bar");
   const modalBtnStudio = document.getElementById("modal-btn-studio");
+  const modalBtnSplit = document.getElementById("modal-btn-split");
   const modalBtnOrig = document.getElementById("modal-btn-orig");
 
   let activeModalDish = null;
+
+  const setWipePercent = (pct) => {
+    const clamped = Math.min(Math.max(Number(pct) || 50, 5), 95);
+    modalMediaStage?.style.setProperty("--wipe-pos", `${clamped}%`);
+    if (modalWipeRange) modalWipeRange.value = String(clamped);
+  };
+
+  const setModalPhotoMode = (mode) => {
+    if (!activeModalDish || !modalImg) return;
+    const hasOrig = Boolean(activeModalDish.originalImage);
+
+    [modalBtnStudio, modalBtnSplit, modalBtnOrig].forEach((b) =>
+      b?.classList.remove("is-active")
+    );
+
+    if (mode === "split" && hasOrig) {
+      modalBtnSplit?.classList.add("is-active");
+      modalImg.src = activeModalDish.image || FALLBACK_IMG;
+      if (modalOrigImg) modalOrigImg.src = activeModalDish.originalImage;
+      if (modalWipeOverlay) modalWipeOverlay.hidden = false;
+      if (modalWipeHandle) modalWipeHandle.hidden = false;
+      if (modalWipeRange) modalWipeRange.hidden = false;
+      setWipePercent(50);
+    } else if (mode === "orig" && hasOrig) {
+      modalBtnOrig?.classList.add("is-active");
+      modalImg.src = activeModalDish.originalImage;
+      if (modalWipeOverlay) modalWipeOverlay.hidden = true;
+      if (modalWipeHandle) modalWipeHandle.hidden = true;
+      if (modalWipeRange) modalWipeRange.hidden = true;
+    } else {
+      modalBtnStudio?.classList.add("is-active");
+      modalImg.src = activeModalDish.image || FALLBACK_IMG;
+      if (modalWipeOverlay) modalWipeOverlay.hidden = true;
+      if (modalWipeHandle) modalWipeHandle.hidden = true;
+      if (modalWipeRange) modalWipeRange.hidden = true;
+    }
+  };
+
+  modalWipeRange?.addEventListener("input", (e) => {
+    setWipePercent(e.target.value);
+  });
 
   const openDishModal = (id) => {
     const dish = itemById.get(id);
     if (!dish || !modalBackdrop) return;
     activeModalDish = dish;
 
-    if (modalImg) {
-      modalImg.src = dish.image || FALLBACK_IMG;
-      modalImg.alt = dish.title;
-    }
     if (modalTitle) modalTitle.textContent = dish.title;
     if (modalDesc) {
       modalDesc.textContent =
@@ -644,12 +995,12 @@
       const p = formatPrice(dish.price);
       modalPrice.textContent = p ? `${p} تومان` : REVIEW_TEXT;
     }
-    if (modalCompareBar) {
-      modalCompareBar.hidden = !dish.originalImage;
-      modalBtnStudio?.classList.add("is-active");
-      modalBtnOrig?.classList.remove("is-active");
-    }
 
+    const hasOrig = Boolean(dish.originalImage);
+    if (modalCompareBar) modalCompareBar.hidden = !hasOrig;
+
+    /* Default to interactive split-curtain when dish has an original photo! */
+    setModalPhotoMode(hasOrig ? "split" : "studio");
     modalBackdrop.hidden = false;
   };
 
@@ -658,22 +1009,13 @@
     activeModalDish = null;
   };
 
-  modalBtnStudio?.addEventListener("click", () => {
-    if (!activeModalDish || !modalImg) return;
-    modalImg.src = activeModalDish.image || FALLBACK_IMG;
-    modalBtnStudio.classList.add("is-active");
-    modalBtnOrig?.classList.remove("is-active");
-  });
-
-  modalBtnOrig?.addEventListener("click", () => {
-    if (!activeModalDish?.originalImage || !modalImg) return;
-    modalImg.src = activeModalDish.originalImage;
-    modalBtnOrig.classList.add("is-active");
-    modalBtnStudio?.classList.remove("is-active");
-  });
+  modalBtnStudio?.addEventListener("click", () => setModalPhotoMode("studio"));
+  modalBtnSplit?.addEventListener("click", () => setModalPhotoMode("split"));
+  modalBtnOrig?.addEventListener("click", () => setModalPhotoMode("orig"));
 
   modalAddBtn?.addEventListener("click", () => {
     if (activeModalDish) {
+      launchFlyToTray(modalImg, activeModalDish.image);
       addToTray(activeModalDish.id, 1);
       closeDishModal();
     }
@@ -691,7 +1033,73 @@
     }
   });
 
-  /* ─── 8. Share Button & Footer Year ─── */
+  /* ─── 9. Scroll-Triggered Reveal Observer, Animated Metrics & Magnetic Buttons ─── */
+  const revealObserver = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((en) => {
+        if (en.isIntersecting) {
+          en.target.classList.add("is-visible");
+        }
+      });
+    },
+    { threshold: 0.12, rootMargin: "0px 0px -40px 0px" }
+  );
+
+  function observeScrollReveals() {
+    document.querySelectorAll(".reveal-on-scroll").forEach((el) => {
+      revealObserver.observe(el);
+    });
+  }
+
+  /* Animated Hero Metrics Count-Up */
+  const animateMetricCounters = () => {
+    if (prefersReducedMotion) return;
+    document.querySelectorAll("[data-count-target]").forEach((el) => {
+      const target = Number(el.getAttribute("data-count-target")) || 0;
+      const suffix = el.getAttribute("data-count-suffix") || "";
+      const duration = 1200;
+      const t0 = performance.now();
+
+      const step = (now) => {
+        const p = Math.min((now - t0) / duration, 1);
+        const eased = 1 - Math.pow(1 - p, 3);
+        const val = Math.round(target * eased);
+        el.textContent = `${toPersianDigits(val)}${suffix}`;
+        if (p < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    });
+  };
+
+  /* Cursor-Tracked Spotlight & Magnetic CTA Buttons */
+  if (!prefersReducedMotion) {
+    document.addEventListener(
+      "pointermove",
+      (e) => {
+        const card = e.target.closest(".spotlight-card, .featured-card, .menu-item-card");
+        if (card) {
+          const r = card.getBoundingClientRect();
+          card.style.setProperty("--mx", `${(e.clientX - r.left).toFixed(0)}px`);
+          card.style.setProperty("--my", `${(e.clientY - r.top).toFixed(0)}px`);
+        }
+      },
+      { passive: true }
+    );
+
+    document.querySelectorAll(".magnetic-btn").forEach((btn) => {
+      btn.addEventListener("pointermove", (e) => {
+        const r = btn.getBoundingClientRect();
+        const dx = (e.clientX - (r.left + r.width / 2)) * 0.18;
+        const dy = (e.clientY - (r.top + r.height / 2)) * 0.22;
+        btn.style.transform = `translate3d(${dx.toFixed(1)}px, ${dy.toFixed(1)}px, 0)`;
+      });
+      btn.addEventListener("pointerleave", () => {
+        btn.style.transform = "";
+      });
+    });
+  }
+
+  /* ─── 10. Share Button & Footer Year ─── */
   document.getElementById("share-menu-btn")?.addEventListener("click", async (e) => {
     const btn = e.currentTarget;
     const shareUrl = window.location.href;
@@ -721,4 +1129,10 @@
   updateTabCounts();
   renderFeatured();
   renderMenu();
+  observeScrollReveals();
+  animateMetricCounters();
+  requestAnimationFrame(() => {
+    const firstTab = document.querySelector(".menu-tab.is-active");
+    if (firstTab) moveTabGlider(firstTab);
+  });
 })();

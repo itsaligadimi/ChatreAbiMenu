@@ -2221,3 +2221,441 @@ html[data-theme="dark"] .item-price {
     animation: none !important;
   }
 }
+/* ═══════════════════════════════════════════════════════════════════════════
+   MOTION GRAPHICS, SCROLL CHOREOGRAPHY & TACTILE EFFECTS
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.svg-defs-hidden {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+/* 1. Topbar Scroll Progress Ribbon */
+.scroll-progress-track {
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 2.5px;
+  background: transparent;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.scroll-progress-bar {
+  height: 100%;
+  width: 100%;
+  transform-origin: right center;
+  transform: scaleX(var(--scroll-progress, 0));
+  background: linear-gradient(90deg, var(--gold-400) 0%, var(--azure-400) 50%, var(--gold-500) 100%);
+  box-shadow: 0 0 12px rgba(217, 164, 54, 0.55);
+  transition: transform 0.08s linear;
+}
+
+/* 2. Hero Saffron & Steam Particle Canvas */
+.hero-particles-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.85;
+}
+
+.hero-container {
+  position: relative;
+  z-index: 2;
+}
+
+/* 3. Scroll-Driven Cloche Arch & Canopy Unfolding */
+.hero-cloche-arch {
+  position: absolute;
+  top: 2%;
+  left: 50%;
+  width: 78%;
+  height: auto;
+  transform: translate3d(-50%, calc(var(--cloche-lift, 0px) * -1), 0) scale(var(--cloche-scale, 1));
+  opacity: calc(1 - var(--cloche-fade, 0));
+  pointer-events: none;
+  z-index: 4;
+  transition: transform 0.12s linear, opacity 0.12s linear;
+}
+
+.topbar.is-scrolled .wing-outer-l {
+  transform: rotate(-5deg) translateY(-1.5px);
+  transform-origin: 0 -42px;
+}
+.topbar.is-scrolled .wing-outer-r {
+  transform: rotate(5deg) translateY(-1.5px);
+  transform-origin: 0 -42px;
+}
+.topbar.is-scrolled .emblem-halo {
+  transform: translateY(-2.5px);
+}
+
+.emblem-halo {
+  transition: transform 0.45s var(--ease-spring);
+}
+
+/* 4. Organic SVG Turbulence Steam Filter + 3D Platter Tilt */
+.steam-layer {
+  filter: url(#culinary-steam-filter);
+}
+
+.stage-turntable {
+  perspective: 1100px;
+}
+
+.hero-main-plate {
+  transform-style: preserve-3d;
+  transform: rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg));
+  will-change: transform;
+}
+
+.hero-main-plate.is-switching {
+  transform: scale(0.88) rotate(-12deg) !important;
+  opacity: 0.65;
+}
+
+.plate-specular-glare {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  z-index: 3;
+  pointer-events: none;
+  background: radial-gradient(
+    circle at var(--glare-x, 30%) var(--glare-y, 25%),
+    rgba(255, 255, 255, 0.42) 0%,
+    rgba(255, 255, 255, 0.08) 32%,
+    transparent 65%
+  );
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s ease;
+}
+
+/* Scroll-Velocity Coupled Orbital Ring */
+.orbit-plate {
+  transform: rotate(calc(var(--angle) + var(--orbit-offset, 0deg)))
+    translate(calc(min(44vw, 226px)))
+    rotate(calc(-1 * (var(--angle) + var(--orbit-offset, 0deg))));
+}
+
+.orbit-plate:hover,
+.orbit-plate.is-active {
+  transform: rotate(calc(var(--angle) + var(--orbit-offset, 0deg)))
+    translate(calc(min(44vw, 226px)))
+    rotate(calc(-1 * (var(--angle) + var(--orbit-offset, 0deg))))
+    scale(1.18);
+}
+
+/* 5. Cursor-Tracked Radial Spotlight Cards */
+.spotlight-card,
+.featured-card,
+.menu-item-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.spotlight-card::after,
+.featured-card::after,
+.menu-item-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(
+    360px circle at var(--mx, 50%) var(--my, 50%),
+    rgba(217, 164, 54, 0.14),
+    rgba(44, 168, 223, 0.06) 45%,
+    transparent 75%
+  );
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+}
+
+.spotlight-card:hover::after,
+.featured-card:hover::after,
+.menu-item-card:hover::after {
+  opacity: 1;
+}
+
+/* 6. Section & Element Scroll Reveal Choreography */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(28px) scale(0.985);
+  transition:
+    opacity 0.7s var(--ease-spring),
+    transform 0.7s var(--ease-spring);
+  will-change: opacity, transform;
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.menu-block-title::before {
+  transform-origin: top center;
+  transform: scaleY(0.2);
+  transition: transform 0.65s var(--ease-spring);
+}
+
+.menu-block.is-visible .menu-block-title::before {
+  transform: scaleY(1);
+}
+
+/* 7. Gliding Category Pill Indicator in Sticky Bar */
+.menu-tabs {
+  position: relative;
+}
+
+.tab-glider {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 2.35rem;
+  width: var(--glider-w, 0px);
+  transform: translate3d(var(--glider-x, 0px), var(--glider-y, 0px), 0);
+  border-radius: 999px;
+  background: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
+  box-shadow: 0 6px 18px rgba(7, 30, 54, 0.24);
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0;
+  transition:
+    transform 0.38s var(--ease-spring),
+    width 0.38s var(--ease-spring),
+    opacity 0.2s ease;
+}
+
+.tab-glider.is-ready {
+  opacity: 1;
+}
+
+.menu-tab {
+  position: relative;
+  z-index: 1;
+}
+
+.menu-tabs.has-glider .menu-tab.is-active {
+  background: transparent;
+  box-shadow: none;
+  border-color: transparent;
+}
+
+/* 8. Animated Vector Logo Path Drawing (#brand-story) */
+.logo-showcase-svg {
+  width: min(88%, 290px);
+  height: auto;
+  color: var(--text-primary);
+  filter: drop-shadow(0 12px 24px rgba(7, 30, 54, 0.14));
+  overflow: visible;
+}
+
+.draw-path {
+  stroke-dasharray: 260;
+  stroke-dashoffset: 260;
+  transition: stroke-dashoffset 1.3s var(--ease-spring);
+}
+
+.draw-wing {
+  opacity: 0;
+  transform: translateY(10px) scale(0.88);
+  transform-origin: 0 -25px;
+  transition:
+    opacity 0.65s var(--ease-spring),
+    transform 0.65s var(--ease-spring);
+}
+
+.wing-1 { transition-delay: 0.18s; }
+.wing-2 { transition-delay: 0.3s; }
+.wing-3 { transition-delay: 0.42s; }
+.wing-4 { transition-delay: 0.54s; }
+
+.draw-finial,
+.draw-text-fa,
+.draw-text-en,
+.draw-text-sub {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.6s ease, transform 0.6s var(--ease-spring);
+}
+
+.draw-finial { transition-delay: 0.25s; }
+.draw-text-fa { transition-delay: 0.55s; }
+.draw-text-en { transition-delay: 0.7s; }
+.draw-text-sub { transition-delay: 0.85s; }
+
+.brand-logo-presenter.is-visible .draw-path {
+  stroke-dashoffset: 0;
+}
+
+.brand-logo-presenter.is-visible .draw-wing,
+.brand-logo-presenter.is-visible .draw-finial,
+.brand-logo-presenter.is-visible .draw-text-fa,
+.brand-logo-presenter.is-visible .draw-text-en,
+.brand-logo-presenter.is-visible .draw-text-sub {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.color-swatch {
+  opacity: 0;
+  transform: translateY(12px) scale(0.9);
+  transition:
+    opacity 0.5s var(--ease-spring),
+    transform 0.5s var(--ease-spring);
+  transition-delay: calc(0.65s + var(--i, 0) * 0.11s);
+}
+
+.brand-logo-presenter.is-visible .color-swatch {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* 9. Interactive Before/After Wipe Comparison Curtain in Modal */
+.modal-wipe-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  clip-path: inset(0 calc(100% - var(--wipe-pos, 50%)) 0 0);
+}
+
+.modal-wipe-overlay img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wipe-tag {
+  position: absolute;
+  top: 0.85rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 800;
+  background: rgba(7, 30, 54, 0.82);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+.wipe-tag-orig {
+  left: 3.6rem;
+}
+
+.wipe-tag-studio {
+  right: 0.85rem;
+  color: var(--gold-400);
+  border-color: var(--border-gold);
+}
+
+.modal-wipe-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--wipe-pos, 50%);
+  transform: translateX(-50%);
+  z-index: 4;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wipe-line {
+  width: 2.5px;
+  height: 100%;
+  background: linear-gradient(to bottom, var(--gold-400), #ffffff, var(--gold-500));
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.45);
+}
+
+.wipe-knob {
+  position: absolute;
+  width: 2.3rem;
+  height: 2.3rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-600));
+  color: var(--navy-950);
+  font-weight: 900;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.modal-wipe-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 5;
+  direction: ltr;
+}
+
+.modal-media-bar {
+  z-index: 6;
+}
+
+/* 10. Parabolic Fly-to-Tray Clone & Tray Bounce */
+.flying-plate-clone {
+  position: fixed;
+  z-index: 9999;
+  width: 3.5rem;
+  height: 3.5rem;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid var(--gold-400);
+  box-shadow: 0 12px 28px rgba(7, 30, 54, 0.38);
+  pointer-events: none;
+  will-change: transform, opacity;
+}
+
+@keyframes trayBounce {
+  0% { transform: scale(1); }
+  35% { transform: scale(1.18) rotate(-3deg); }
+  70% { transform: scale(0.95) rotate(2deg); }
+  100% { transform: scale(1); }
+}
+
+.tray-trigger.is-bouncing,
+.floating-tray-bar.is-bouncing {
+  animation: trayBounce 0.48s var(--ease-spring);
+}
+
+.floating-tray-bar.is-bouncing {
+  animation-name: floatingBarBounce;
+}
+
+@keyframes floatingBarBounce {
+  0% { transform: translateX(-50%) scale(1); }
+  40% { transform: translateX(-50%) scale(1.05) translateY(-4px); }
+  100% { transform: translateX(-50%) scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-on-scroll,
+  .draw-path,
+  .draw-wing,
+  .draw-finial,
+  .draw-text-fa,
+  .draw-text-en,
+  .draw-text-sub,
+  .color-swatch {
+    opacity: 1 !important;
+    transform: none !important;
+    stroke-dashoffset: 0 !important;
+    transition: none !important;
+  }
+}

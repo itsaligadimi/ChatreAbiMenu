@@ -20,12 +20,24 @@
     />
     <meta property="og:image" content="images/food/baghali-mahiche-pro.jpg" />
     <title>رستوران چتر آبی | Blue Umbrella Restaurant — منوی دیجیتال</title>
-    <link rel="icon" href="images/favicon.svg?v=2" type="image/svg+xml" />
-    <link rel="icon" href="images/favicon.png?v=2" type="image/png" sizes="128x128" />
-    <link rel="stylesheet" href="style.css?v=2" />
+    <link rel="icon" href="images/favicon.svg?v=3" type="image/svg+xml" />
+    <link rel="icon" href="images/favicon.png?v=3" type="image/png" sizes="128x128" />
+    <link rel="stylesheet" href="style.css?v=3" />
   </head>
   <body>
     <a class="skip-link" href="#menu">رفتن به منوی رستوران</a>
+
+    <!-- SVG Filters for Organic Culinary Steam & Shimmer -->
+    <svg class="svg-defs-hidden" aria-hidden="true" width="0" height="0">
+      <defs>
+        <filter id="culinary-steam-filter" x="-20%" y="-20%" width="140%" height="140%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.018 0.035" numOctaves="3" seed="4" result="noise">
+            <animate attributeName="baseFrequency" values="0.018 0.035;0.022 0.05;0.018 0.035" dur="9s" repeatCount="indefinite" />
+          </feTurbulence>
+          <feDisplacementMap in="SourceGraphic" in2="noise" scale="14" xChannelSelector="R" yChannelSelector="G" />
+        </filter>
+      </defs>
+    </svg>
 
     <!-- Ambient Architectural Background Layer -->
     <div class="ambient-canvas" aria-hidden="true">
@@ -37,10 +49,15 @@
 
     <!-- ─── Sticky Glass Header ─── -->
     <header class="topbar" id="topbar">
+      <!-- Scroll Progress Ribbon -->
+      <div class="scroll-progress-track" aria-hidden="true">
+        <div class="scroll-progress-bar" id="scroll-progress-bar"></div>
+      </div>
+
       <div class="topbar-inner">
         <a class="brand-lockup" href="#hero" aria-label="رستوران چتر آبی — صفحه اصلی">
           <div class="brand-emblem-wrap" aria-hidden="true">
-            <svg class="brand-emblem-svg" viewBox="0 0 120 96" fill="none">
+            <svg class="brand-emblem-svg" id="header-umbrella-svg" viewBox="0 0 120 96" fill="none">
               <defs>
                 <linearGradient id="hdr-navy" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stop-color="#144b82" />
@@ -125,9 +142,12 @@
     <main>
       <!-- ─── Hero Section ─── -->
       <section class="hero" id="hero" aria-labelledby="hero-title">
+        <!-- Interactive Saffron & Steam Particle Canvas -->
+        <canvas class="hero-particles-canvas" id="hero-particles-canvas" aria-hidden="true"></canvas>
+
         <div class="hero-container">
           <!-- Hero Text & Story Column -->
-          <div class="hero-copy">
+          <div class="hero-copy reveal-on-scroll is-visible">
             <div class="hero-pill">
               <span class="status-dot" aria-hidden="true"></span>
               <span>رستوران چتر آبی تبریز · صبحانه، ناهار و شام</span>
@@ -145,34 +165,34 @@
             </p>
 
             <div class="hero-cta-row">
-              <button type="button" class="btn btn-royal" data-scroll="menu">
+              <button type="button" class="btn btn-royal magnetic-btn" data-scroll="menu">
                 <span>مشاهده منوی دیجیتال</span>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 5v14M5 12l7 7 7-7" />
                 </svg>
               </button>
-              <button type="button" class="btn btn-outline-gold" data-scroll="featured">
+              <button type="button" class="btn btn-outline-gold magnetic-btn" data-scroll="featured">
                 <span>ویترین سرآشپز</span>
               </button>
-              <a class="btn btn-ghost-call" href="https://wa.me/989122794809" target="_blank" rel="noopener noreferrer">
+              <a class="btn btn-ghost-call magnetic-btn" href="https://wa.me/989122794809" target="_blank" rel="noopener noreferrer">
                 <span>رزرو واتساپ</span>
               </a>
             </div>
 
-            <!-- Key Culinary Highlights -->
+            <!-- Key Culinary Highlights with Animated Counters -->
             <div class="hero-metrics" role="list" aria-label="ویژگی‌های رستوران">
               <div class="metric-item" role="listitem">
-                <strong class="metric-val">۶۳+</strong>
+                <strong class="metric-val" data-count-target="81" data-count-suffix="+">۸۱+</strong>
                 <span class="metric-lbl">عنوان غذا و نوشیدنی</span>
               </div>
               <div class="metric-divider" aria-hidden="true"></div>
               <div class="metric-item" role="listitem">
-                <strong class="metric-val">۱۰۰٪</strong>
+                <strong class="metric-val" data-count-target="100" data-count-suffix="٪">۱۰۰٪</strong>
                 <span class="metric-lbl">برنج و زعفران ایرانی</span>
               </div>
               <div class="metric-divider" aria-hidden="true"></div>
               <div class="metric-item" role="listitem">
-                <strong class="metric-val">۵ بخش</strong>
+                <strong class="metric-val" data-count-target="5" data-count-suffix=" بخش">۵ بخش</strong>
                 <span class="metric-lbl">صبحانه تا کباب مجلسی</span>
               </div>
             </div>
@@ -180,21 +200,34 @@
 
           <!-- Hero Interactive 3D / Orbital Platter Stage -->
           <div class="hero-stage-wrap" id="hero-stage">
-            <div class="stage-turntable">
+            <div class="stage-turntable" id="stage-turntable">
               <!-- Decorative Persian Geometric Rings -->
               <div class="turntable-ring ring-outer" aria-hidden="true"></div>
               <div class="turntable-ring ring-inner" aria-hidden="true"></div>
 
-              <!-- Animated Steam Wisps over Hot Dish -->
+              <!-- Scroll-Driven Golden Cloche Arch over the Platter -->
+              <svg class="hero-cloche-arch" viewBox="0 0 320 140" fill="none" aria-hidden="true">
+                <path
+                  d="M20 125 A140 120 0 0 1 300 125"
+                  stroke="url(#hdr-gold)"
+                  stroke-width="2"
+                  stroke-dasharray="6 6"
+                  opacity="0.7"
+                />
+                <circle cx="160" cy="5" r="5" fill="#d9a436" />
+              </svg>
+
+              <!-- Animated Steam Wisps with SVG Turbulence over Hot Dish -->
               <div class="steam-layer" aria-hidden="true">
                 <span class="steam-wisp wisp-1"></span>
                 <span class="steam-wisp wisp-2"></span>
                 <span class="steam-wisp wisp-3"></span>
               </div>
 
-              <!-- Central Showcase Plate -->
+              <!-- Central Showcase Plate with 3D Tilt & Specular Glare -->
               <div class="hero-main-plate" id="hero-main-plate">
                 <div class="plate-porcelain-rim"></div>
+                <div class="plate-specular-glare" aria-hidden="true"></div>
                 <img
                   id="hero-active-img"
                   src="images/food/baghali-mahiche-pro.jpg"
@@ -203,11 +236,11 @@
                   height="460"
                   fetchpriority="high"
                 />
-                <span class="hero-photo-badge" id="hero-photo-badge">عکاسی استودیویی بازطراحی‌شده</span>
+                <span class="hero-photo-badge" id="hero-photo-badge">عکاسی استودیویی بازطراحی‌شده ✨</span>
               </div>
 
-              <!-- Orbital Selector Thumbnails -->
-              <div class="orbital-plates" role="tablist" aria-label="انتخاب بشقاب نمونه در ویترین">
+              <!-- Orbital Selector Thumbnails (Scroll-Velocity Coupled) -->
+              <div class="orbital-plates" id="orbital-plates" role="tablist" aria-label="انتخاب بشقاب نمونه در ویترین">
                 <button
                   type="button"
                   class="orbit-plate is-active"
@@ -278,7 +311,7 @@
             </div>
 
             <!-- Floating Dish Spotlight Card -->
-            <div class="hero-dish-card" id="hero-dish-card" aria-live="polite">
+            <div class="hero-dish-card spotlight-card" id="hero-dish-card" aria-live="polite">
               <div class="hero-dish-meta">
                 <span class="hero-dish-tag" id="hero-dish-tag">شاهکار سرآشپز</span>
                 <button
@@ -312,12 +345,12 @@
       <!-- ─── Chef's Signature Showcase (ویترین ویژه سرآشپز) ─── -->
       <section class="featured-section" id="featured" aria-labelledby="featured-title">
         <div class="section-container">
-          <div class="section-head">
+          <div class="section-head reveal-on-scroll">
             <div>
               <span class="section-kicker">CHEF’S SIGNATURE COLLECTION</span>
               <h2 id="featured-title" class="section-title">ویترین بشقاب‌های برگزیده چتر آبی</h2>
               <p class="section-subtitle">
-                تصاویر اختصاصی بشقاب‌های محبوب ما — با قابلیت مقایسهٔ عکاسی استودیویی جدید و تصویر اولیه منو.
+                تصاویر اختصاصی بشقاب‌های محبوب ما — روی هر بشقاب کلیک کنید تا با اسلایدر طلایی، عکس استودیویی و عکس اولیه را زنده مقایسه کنید.
               </p>
             </div>
             <div class="photo-mode-switch" role="group" aria-label="حالت نمایش تصاویر">
@@ -337,19 +370,20 @@
       <!-- ─── Complete Interactive Digital Menu (منوی جامع رستوران) ─── -->
       <section class="menu-section" id="menu" aria-labelledby="menu-title">
         <div class="section-container">
-          <header class="menu-header">
+          <header class="menu-header reveal-on-scroll">
             <span class="section-kicker">COMPLETE DIGITAL MENU</span>
             <h2 id="menu-title" class="section-title">منوی کامل رستوران چتر آبی</h2>
             <p class="section-subtitle">
               کلیه قیمت‌ها به <strong>تومان</strong> است. برای انتخاب غذاها و محاسبه جمع سفارش سر میز، دکمهٔ
-              <strong>«+»</strong> کنار هر غذا را لمس کنید.
+              <strong>«+ انتخاب»</strong> کنار هر غذا را لمس کنید.
             </p>
           </header>
 
           <!-- Sticky Smart Controls -->
           <div class="menu-sticky-bar" id="menu-controls">
-            <!-- Category Tabs -->
-            <div class="menu-tabs" role="tablist" aria-label="دسته‌بندی‌های منو">
+            <!-- Category Tabs with Gliding Active Indicator -->
+            <div class="menu-tabs" id="menu-tabs" role="tablist" aria-label="دسته‌بندی‌های منو">
+              <span class="tab-glider" id="tab-glider" aria-hidden="true"></span>
               <button type="button" class="menu-tab is-active" data-category="all" role="tab" aria-selected="true">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
                 <span>همه</span>
@@ -457,30 +491,135 @@
         </div>
       </section>
 
-      <!-- ─── Brand Identity & Logo Redesign Showcase ─── -->
+      <!-- ─── Brand Identity & Animated SVG Logo Choreography ─── -->
       <section class="brand-story-section" id="brand-story" aria-labelledby="brand-story-title">
         <div class="section-container">
           <div class="brand-story-grid">
-            <div class="brand-story-card brand-logo-presenter">
-              <div class="logo-stage-card">
+            <div class="brand-story-card brand-logo-presenter reveal-on-scroll" id="brand-logo-card">
+              <div class="logo-stage-card spotlight-card">
                 <span class="logo-stage-badge">بازطراحی نشان تجاری · NEW BRAND IDENTITY</span>
-                <img
-                  class="logo-showcase-img"
-                  src="images/logo.svg"
-                  width="300"
-                  height="184"
-                  alt="لوگوی جدید رستوران چتر آبی — Blue Umbrella Restaurant"
-                />
+
+                <!-- Inline Animated Vector Logo for Scroll Path-Drawing Choreography -->
+                <svg
+                  class="logo-showcase-svg"
+                  id="animated-brand-logo"
+                  viewBox="0 0 360 220"
+                  role="img"
+                  aria-label="لوگوی جدید رستوران چتر آبی — Blue Umbrella Restaurant"
+                >
+                  <defs>
+                    <linearGradient id="bs-navy" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#0f3c68" />
+                      <stop offset="100%" stop-color="#071e36" />
+                    </linearGradient>
+                    <linearGradient id="bs-cerulean" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stop-color="#4cc9f0" />
+                      <stop offset="100%" stop-color="#1669a8" />
+                    </linearGradient>
+                    <linearGradient id="bs-azure" x1="50%" y1="0%" x2="50%" y2="100%">
+                      <stop offset="0%" stop-color="#72ddf7" />
+                      <stop offset="100%" stop-color="#1d84c6" />
+                    </linearGradient>
+                    <linearGradient id="bs-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+                      <stop offset="0%" stop-color="#c89228" />
+                      <stop offset="50%" stop-color="#f3cd74" />
+                      <stop offset="100%" stop-color="#c89228" />
+                    </linearGradient>
+                  </defs>
+                  <g transform="translate(180, 78)">
+                    <path
+                      class="draw-path draw-arch"
+                      d="M-68 6 A68 68 0 0 1 68 6"
+                      fill="none"
+                      stroke="url(#bs-gold)"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    />
+                    <circle class="draw-finial" cx="0" cy="-69" r="3.8" fill="url(#bs-gold)" />
+                    <path
+                      class="draw-wing wing-1"
+                      d="M-4 -59 C-35 -56 -60 -32 -63 3 C-50 -4 -37 -3 -28 4 C-25 -26 -14 -48 -4 -59 Z"
+                      fill="url(#bs-navy)"
+                    />
+                    <path
+                      class="draw-wing wing-2"
+                      d="M-2 -59 C-12 -48 -22 -26 -25 4 C-17 -3 -9 -3 -2 4 Z"
+                      fill="url(#bs-cerulean)"
+                    />
+                    <path
+                      class="draw-wing wing-3"
+                      d="M2 -59 L2 4 C9 -3 17 -3 25 4 C22 -26 12 -48 2 -59 Z"
+                      fill="url(#bs-azure)"
+                    />
+                    <path
+                      class="draw-wing wing-4"
+                      d="M4 -59 C14 -48 25 -26 28 4 C37 -3 50 -4 63 3 C60 -32 35 -56 4 -59 Z"
+                      fill="url(#bs-navy)"
+                    />
+                    <path
+                      class="draw-path draw-stem"
+                      d="M0 4 L0 25 C0 33 -11 33 -11 25.5"
+                      fill="none"
+                      stroke="url(#bs-navy)"
+                      stroke-width="3.8"
+                      stroke-linecap="round"
+                    />
+                    <path
+                      class="draw-path draw-horizon"
+                      d="M-48 16 Q0 28 48 16"
+                      fill="none"
+                      stroke="url(#bs-gold)"
+                      stroke-width="2.2"
+                      stroke-linecap="round"
+                    />
+                  </g>
+                  <text
+                    class="draw-text-fa"
+                    x="180"
+                    y="150"
+                    text-anchor="middle"
+                    font-family="Vazirmatn, system-ui, sans-serif"
+                    font-size="35"
+                    font-weight="800"
+                    fill="currentColor"
+                  >چتر آبی</text>
+                  <text
+                    class="draw-text-en"
+                    x="180"
+                    y="177"
+                    text-anchor="middle"
+                    font-family="Vazirmatn, 'Helvetica Neue', Arial, sans-serif"
+                    font-size="16.5"
+                    font-weight="800"
+                    fill="#1669a8"
+                    letter-spacing="5.5"
+                  >BLUE UMBRELLA</text>
+                  <g class="draw-text-sub" transform="translate(180, 198)">
+                    <line x1="-78" y1="-3.5" x2="-42" y2="-3.5" stroke="url(#bs-gold)" stroke-width="1.5" stroke-linecap="round" />
+                    <text
+                      x="0"
+                      y="0"
+                      text-anchor="middle"
+                      font-family="Vazirmatn, system-ui, sans-serif"
+                      font-size="9.5"
+                      font-weight="700"
+                      fill="#64748b"
+                      letter-spacing="3.2"
+                    >RESTAURANT</text>
+                    <line x1="42" y1="-3.5" x2="78" y2="-3.5" stroke="url(#bs-gold)" stroke-width="1.5" stroke-linecap="round" />
+                  </g>
+                </svg>
+
                 <div class="logo-swatch-row" aria-label="پالت رنگی برند چتر آبی">
-                  <div class="color-swatch" style="--sw: #071e36"><span>لاجوردی سلطنتی</span></div>
-                  <div class="color-swatch" style="--sw: #1669a8"><span>آبی فیروزه‌ای</span></div>
-                  <div class="color-swatch" style="--sw: #4cc9f0"><span>آسمانی چتر آبی</span></div>
-                  <div class="color-swatch" style="--sw: #d9a436"><span>طلایی زعفران</span></div>
+                  <div class="color-swatch" style="--sw: #071e36; --i: 0"><span>لاجوردی سلطنتی</span></div>
+                  <div class="color-swatch" style="--sw: #1669a8; --i: 1"><span>آبی فیروزه‌ای</span></div>
+                  <div class="color-swatch" style="--sw: #4cc9f0; --i: 2"><span>آسمانی چتر آبی</span></div>
+                  <div class="color-swatch" style="--sw: #d9a436; --i: 3"><span>طلایی زعفران</span></div>
                 </div>
               </div>
             </div>
 
-            <div class="brand-story-copy">
+            <div class="brand-story-copy reveal-on-scroll">
               <span class="section-kicker">ARCHITECTURE OF HOSPITALITY</span>
               <h2 id="brand-story-title" class="section-title">فلسفهٔ طراحی چتر آبی؛ تلفیق اصالت تبریز و ظرافت مدرن</h2>
               <p class="brand-story-text">
@@ -491,15 +630,15 @@
               </p>
 
               <div class="brand-pillars">
-                <div class="pillar-card">
+                <div class="pillar-card spotlight-card">
                   <strong>مواد اولیه تازه روز</strong>
                   <p>گوشت گوسفندی تازه، برنج ۱۰۰٪ ایرانی و زعفران سرگل خالص در تمامی وعده‌ها.</p>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-card spotlight-card">
                   <strong>صبحانه‌های اصیل تبریزی</strong>
                   <p>از قیساوای خرما و گردو و سرشیر محلی تا املت‌های درباری و تبریزی در تابه مسی.</p>
                 </div>
-                <div class="pillar-card">
+                <div class="pillar-card spotlight-card">
                   <strong>میزبانی گرم خانوادگی</strong>
                   <p>فضایی دلنشین برای دورهمی‌های خانوادگی، قرارهای کاری و میهمانی‌های ویژه در تبریز.</p>
                 </div>
@@ -517,7 +656,7 @@
           <div class="orbit-dots"></div>
         </div>
 
-        <div class="contact-inner">
+        <div class="contact-inner reveal-on-scroll">
           <span class="contact-kicker">RESERVATION & DIRECT ORDER</span>
           <h2 id="contact-title" class="contact-title">آمادهٔ میزبانی از لحظه‌های خوشمزهٔ شما هستیم</h2>
           <p class="contact-tagline">
@@ -526,20 +665,20 @@
           </p>
 
           <div class="contact-constellation">
-            <a class="orbit-card orbit-card-main" href="tel:+984133312437">
+            <a class="orbit-card orbit-card-main spotlight-card" href="tel:+984133312437">
               <span class="orbit-card-label">خط اول رزرو و سفارش (تبریز)</span>
               <span class="orbit-card-value" dir="ltr">041 3331 2437</span>
               <span class="orbit-card-action">تماس مستقیم تلفنی</span>
             </a>
 
-            <a class="orbit-card" href="tel:+984133297177">
+            <a class="orbit-card spotlight-card" href="tel:+984133297177">
               <span class="orbit-card-label">خط دوم رستوران</span>
               <span class="orbit-card-value" dir="ltr">041 3329 7177</span>
               <span class="orbit-card-sub">پاسخگویی سریع در ساعات کاری</span>
             </a>
 
             <a
-              class="orbit-card orbit-card-wa"
+              class="orbit-card orbit-card-wa spotlight-card"
               href="https://wa.me/989122794809"
               target="_blank"
               rel="noopener noreferrer"
@@ -551,10 +690,10 @@
           </div>
 
           <div class="contact-bottom-actions">
-            <button type="button" class="btn btn-outline-light" data-scroll="menu">
+            <button type="button" class="btn btn-outline-light magnetic-btn" data-scroll="menu">
               بازگشت به بالای منو ↑
             </button>
-            <button type="button" class="btn btn-outline-light" id="share-menu-btn">
+            <button type="button" class="btn btn-outline-light magnetic-btn" id="share-menu-btn">
               اشتراک‌گذاری لینک منو
             </button>
           </div>
@@ -630,20 +769,50 @@
       </aside>
     </div>
 
-    <!-- ─── Dish Lightbox & Photo Comparison Modal ─── -->
+    <!-- ─── Dish Lightbox & Interactive Before/After Wipe Comparison Modal ─── -->
     <div class="modal-backdrop" id="dish-modal-backdrop" hidden>
       <div class="dish-modal" role="dialog" aria-modal="true" aria-labelledby="modal-dish-title">
         <button type="button" class="modal-close-btn modal-close-floating" id="modal-close-btn" aria-label="بستن">
           ×
         </button>
-        <div class="dish-modal-media">
+        <div class="dish-modal-media" id="modal-media-stage">
+          <!-- Studio Image Base -->
           <img id="modal-dish-img" src="images/food/baghali-mahiche-pro.jpg" alt="" />
+
+          <!-- Original Image Clipped Layer for Interactive Wipe Comparison -->
+          <div class="modal-wipe-overlay" id="modal-wipe-overlay" hidden>
+            <img id="modal-dish-orig-img" src="images/food/baghali-mahiche.jpg" alt="عکس اولیه منو" />
+            <span class="wipe-tag wipe-tag-orig">عکس اولیه</span>
+            <span class="wipe-tag wipe-tag-studio">نمای استودیویی ✨</span>
+          </div>
+
+          <!-- Golden Draggable Wipe Handle -->
+          <div class="modal-wipe-handle" id="modal-wipe-handle" hidden aria-hidden="true">
+            <div class="wipe-line"></div>
+            <div class="wipe-knob">↔</div>
+          </div>
+
+          <!-- Accessible Range Input for Scrubbing -->
+          <input
+            type="range"
+            min="5"
+            max="95"
+            value="50"
+            class="modal-wipe-range"
+            id="modal-wipe-range"
+            aria-label="اسلایدر مقایسه عکس استودیویی و عکس اصلی"
+            hidden
+          />
+
           <div class="modal-media-bar" id="modal-compare-bar" hidden>
             <button type="button" class="modal-photo-btn is-active" id="modal-btn-studio">
-              عکس استودیویی جدید ✨
+              عکس استودیویی ✨
+            </button>
+            <button type="button" class="modal-photo-btn" id="modal-btn-split">
+              اسلایدر مقایسه زنده ↔
             </button>
             <button type="button" class="modal-photo-btn" id="modal-btn-orig">
-              عکس اصلی منو
+              عکس اصلی
             </button>
           </div>
         </div>
@@ -667,7 +836,7 @@
       </div>
     </div>
 
-    <script src="js/menu-data.js?v=2"></script>
-    <script src="script.js?v=2"></script>
+    <script src="js/menu-data.js?v=3"></script>
+    <script src="script.js?v=3"></script>
   </body>
 </html>
