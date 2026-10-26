@@ -1,7 +1,14 @@
 "use strict";
 
 (function () {
-  const REVIEW = "نیاز به بررسی";
+  const REVIEW_TEXT = "استعلام قیمت روز";
+  const FALLBACK_IMG = "images/food/baghali-mahiche-pro.jpg";
+
+  const items = Array.isArray(window.MENU_DATA) ? window.MENU_DATA : [];
+  const itemById = new Map(items.map((item, idx) => [item.id || `item-${idx}`, item]));
+
+  const toPersianDigits = (val) =>
+    String(val).replace(/\d/g, (d) => "۰۱۲۳۴۵۶۷۸۹"[Number(d)]);
 
   const formatPrice = (raw) => {
     const digits = String(raw || "").replace(/\D/g, "");
@@ -12,19 +19,20 @@
   const normalize = (t) =>
     String(t || "")
       .toLowerCase()
-      .replace(/\u200c/g, "")
+      .replace(/ي/g, "ی")
+      .replace(/ك/g, "ک")
+      .replace(/\u200c/g, " ")
+      .replace(/\s+/g, " ")
       .trim();
 
   const escapeHtml = (s) =>
-    String(s)
+    String(s || "")
       .replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;");
 
-  const items = typeof MENU_DATA !== "undefined" ? MENU_DATA : [];
-
-  /* Scroll targets */
+  /* ─── 1. Smooth Scroll & Topbar State ─── */
   document.querySelectorAll("[data-scroll]").forEach((el) => {
     el.addEventListener("click", () => {
       const id = el.getAttribute("data-scroll");
@@ -37,104 +45,318 @@
   if (topbar) {
     window.addEventListener(
       "scroll",
-      () => topbar.classList.toggle("is-scrolled", window.scrollY > 24),
+      () => topbar.classList.toggle("is-scrolled", window.scrollY > 20),
       { passive: true }
     );
   }
 
-  /* Hero parallax */
-  const stage = document.getElementById("hero-stage");
-  const hero = document.getElementById("hero");
-  const plates = stage ? Array.from(stage.querySelectorAll(".plate")) : [];
-  const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  let mouseX = 0;
-  let mouseY = 0;
-  let scrollY = 0;
-
-  if (!reducedMotion && plates.length) {
-    document.addEventListener(
-      "mousemove",
-      (e) => {
-        const cx = window.innerWidth / 2;
-        const cy = window.innerHeight / 2;
-        mouseX = (e.clientX - cx) / cx;
-        mouseY = (e.clientY - cy) / cy;
-      },
-      { passive: true }
-    );
-
-    window.addEventListener("scroll", () => {
-      scrollY = window.scrollY;
-    }, { passive: true });
-
-    const updatePlates = () => {
-      const heroH = hero ? hero.offsetHeight : 600;
-      const scrollFactor = Math.min(scrollY / heroH, 1);
-
-      plates.forEach((plate, i) => {
-        const depth = parseFloat(plate.dataset.depth || "0.4");
-        const mx = mouseX * depth * 28;
-        const my = mouseY * depth * 22;
-        const sy = scrollFactor * depth * 120 * (i % 2 === 0 ? 1 : -1);
-        const rot = mouseX * depth * 6 + (i - 2) * 2;
-        const scale = 1 - scrollFactor * 0.08;
-        plate.style.transform = `translate3d(${mx}px, ${my + sy}px, 0) rotate(${rot}deg) scale(${scale})`;
-      });
-      requestAnimationFrame(updatePlates);
-    };
-    requestAnimationFrame(updatePlates);
+  /* ─── 2. Theme Toggle (Light Marble / Royal Dark) ─── */
+  const themeToggle = document.getElementById("theme-toggle");
+  const rootHtml = document.documentElement;
+  const savedTheme = localStorage.getItem("chatreabi-theme");
+  if (savedTheme === "dark" || savedTheme === "light") {
+    rootHtml.setAttribute("data-theme", savedTheme);
   }
 
-  /* Orbit card glow follow */
-  document.querySelectorAll(".orbit-card").forEach((card) => {
-    card.addEventListener("mousemove", (e) => {
-      const r = card.getBoundingClientRect();
-      const x = ((e.clientX - r.left) / r.width) * 100;
-      const y = ((e.clientY - r.top) / r.height) * 100;
-      card.style.setProperty("--mx", `${x}%`);
-      card.style.setProperty("--my", `${y}%`);
+  themeToggle?.addEventListener("click", () => {
+    const next = rootHtml.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    rootHtml.setAttribute("data-theme", next);
+    localStorage.setItem("chatreabi-theme", next);
+  });
+
+  /* ─── 3. Interactive Hero Orbital Stage ─── */
+  const orbitButtons = Array.from(document.querySelectorAll(".orbit-plate"));
+  const heroMainPlate = document.getElementById("hero-main-plate");
+  const heroActiveImg = document.getElementById("hero-active-img");
+  const heroPhotoBadge = document.getElementById("hero-photo-badge");
+  const heroDishTag = document.getElementById("hero-dish-tag");
+  const heroDishTitle = document.getElementById("hero-dish-title");
+  const heroDishDesc = document.getElementById("hero-dish-desc");
+  const heroDishPrice = document.getElementById("hero-dish-price");
+  const heroAddBtn = document.getElementById("hero-add-btn");
+  const heroCompareBtn = document.getElementById("hero-compare-btn");
+  const heroStage = document.getElementById("hero-stage");
+
+  let activeHeroId = "ir-baghali-mahiche";
+  let heroShowingOriginal = false;
+  let heroAutoTimer = null;
+
+  const updateHeroStage = (dishId, animate = true) => {
+    const dish = itemById.get(dishId);
+    if (!dish) return;
+    activeHeroId = dishId;
+    heroShowingOriginal = false;
+
+    orbitButtons.forEach((btn) => {
+      const isMatch = btn.dataset.dishId === dishId;
+      btn.classList.toggle("is-active", isMatch);
+      btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+    });
+
+    if (animate && heroMainPlate) {
+      heroMainPlate.classList.add("is-switching");
+      setTimeout(() => {
+        if (heroActiveImg) {
+          heroActiveImg.src = dish.image || FALLBACK_IMG;
+          heroActiveImg.alt = dish.title;
+        }
+        heroMainPlate.classList.remove("is-switching");
+      }, 180);
+    } else if (heroActiveImg) {
+      heroActiveImg.src = dish.image || FALLBACK_IMG;
+      heroActiveImg.alt = dish.title;
+    }
+
+    if (heroPhotoBadge) {
+      heroPhotoBadge.textContent = "عکاسی استودیویی بازطراحی‌شده ✨";
+    }
+    if (heroCompareBtn) {
+      heroCompareBtn.hidden = !dish.originalImage;
+      heroCompareBtn.classList.remove("is-comparing");
+      heroCompareBtn.textContent = "مقایسه با عکس اصلی";
+    }
+    if (heroDishTag) heroDishTag.textContent = dish.badge || dish.section || "ویژه چتر آبی";
+    if (heroDishTitle) heroDishTitle.textContent = dish.title;
+    if (heroDishDesc) heroDishDesc.textContent = dish.desc || "پخت روزانه با مواد اولیه تازه در رستوران چتر آبی";
+    if (heroDishPrice) {
+      const p = formatPrice(dish.price);
+      heroDishPrice.innerHTML = p ? `${escapeHtml(p)} <small>تومان</small>` : REVIEW_TEXT;
+    }
+    if (heroAddBtn) {
+      heroAddBtn.dataset.id = dish.id;
+    }
+  };
+
+  orbitButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const id = btn.dataset.dishId;
+      if (id) updateHeroStage(id, true);
     });
   });
 
-  /* Menu */
+  heroCompareBtn?.addEventListener("click", () => {
+    const dish = itemById.get(activeHeroId);
+    if (!dish || !dish.originalImage || !heroActiveImg) return;
+    heroShowingOriginal = !heroShowingOriginal;
+    heroActiveImg.src = heroShowingOriginal ? dish.originalImage : dish.image;
+    heroCompareBtn.classList.toggle("is-comparing", heroShowingOriginal);
+    heroCompareBtn.textContent = heroShowingOriginal
+      ? "بازگشت به عکس استودیویی ✨"
+      : "مقایسه با عکس اصلی";
+    if (heroPhotoBadge) {
+      heroPhotoBadge.textContent = heroShowingOriginal
+        ? "عکس اولیه منوی رستوران"
+        : "عکاسی استودیویی بازطراحی‌شده ✨";
+    }
+  });
+
+  heroAddBtn?.addEventListener("click", () => {
+    const id = heroAddBtn.dataset.id;
+    if (id) addToTray(id, 1);
+  });
+
+  const startHeroCycle = () => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    stopHeroCycle();
+    heroAutoTimer = setInterval(() => {
+      if (heroShowingOriginal) return;
+      const ids = orbitButtons.map((b) => b.dataset.dishId).filter(Boolean);
+      const idx = ids.indexOf(activeHeroId);
+      const nextId = ids[(idx + 1) % ids.length];
+      if (nextId) updateHeroStage(nextId, true);
+    }, 5200);
+  };
+
+  const stopHeroCycle = () => {
+    if (heroAutoTimer) {
+      clearInterval(heroAutoTimer);
+      heroAutoTimer = null;
+    }
+  };
+
+  heroStage?.addEventListener("mouseenter", stopHeroCycle);
+  heroStage?.addEventListener("mouseleave", startHeroCycle);
+  startHeroCycle();
+
+  /* ─── 4. Chef's Signature Showcase (Featured Grid) ─── */
+  const featuredGrid = document.getElementById("featured-grid");
+  const modeStudioBtn = document.getElementById("mode-studio-btn");
+  const modeOriginalBtn = document.getElementById("mode-original-btn");
+  let featuredPhotoMode = "studio"; // "studio" | "original"
+
+  const renderFeatured = () => {
+    if (!featuredGrid) return;
+    const featuredItems = items.filter((item) => item.featured);
+    featuredGrid.innerHTML = featuredItems
+      .map((item) => {
+        const imgSrc =
+          featuredPhotoMode === "original" && item.originalImage
+            ? item.originalImage
+            : item.image || FALLBACK_IMG;
+        const priceFormatted = formatPrice(item.price);
+        const priceHtml = priceFormatted
+          ? `<span class="featured-price">${escapeHtml(priceFormatted)} <small>تومان</small></span>`
+          : `<span class="featured-price">${REVIEW_TEXT}</span>`;
+
+        return `
+          <article class="featured-card" data-dish-id="${escapeHtml(item.id)}">
+            <div class="featured-media" data-open-modal="${escapeHtml(item.id)}">
+              <img
+                src="${escapeHtml(imgSrc)}"
+                alt="${escapeHtml(item.title)}"
+                loading="lazy"
+                onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"
+              />
+              <span class="featured-badge-top">${escapeHtml(item.badge || item.section)}</span>
+              <span class="featured-zoom-hint">بزرگ‌نمایی و مقایسه 🔎</span>
+            </div>
+            <div class="featured-body">
+              <h3 class="featured-title">${escapeHtml(item.title)}</h3>
+              <p class="featured-desc">${escapeHtml(item.desc || "سرو شده با دورچین تازه در رستوران چتر آبی")}</p>
+              <div class="featured-foot">
+                ${priceHtml}
+                <button type="button" class="btn-add-mini" data-add-id="${escapeHtml(item.id)}">
+                  + افزودن به میز
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      })
+      .join("");
+  };
+
+  modeStudioBtn?.addEventListener("click", () => {
+    featuredPhotoMode = "studio";
+    modeStudioBtn.classList.add("is-active");
+    modeOriginalBtn?.classList.remove("is-active");
+    renderFeatured();
+  });
+
+  modeOriginalBtn?.addEventListener("click", () => {
+    featuredPhotoMode = "original";
+    modeOriginalBtn.classList.add("is-active");
+    modeStudioBtn?.classList.remove("is-active");
+    renderFeatured();
+  });
+
+  /* ─── 5. Complete Digital Menu Filtering, Sorting & Rendering ─── */
   const board = document.getElementById("menu-board");
   const emptyEl = document.getElementById("menu-empty");
   const searchInput = document.getElementById("menu-search");
+  const searchClear = document.getElementById("search-clear");
+  const featuredFilterBtn = document.getElementById("filter-featured-only");
+  const sortSelect = document.getElementById("menu-sort");
+  const resetFiltersBtn = document.getElementById("reset-filters-btn");
+  const summaryEl = document.getElementById("menu-result-summary");
   const tabs = Array.from(document.querySelectorAll(".menu-tab"));
+  const viewButtons = Array.from(document.querySelectorAll(".view-btn"));
 
-  let category = "all";
-  let query = "";
+  let activeCategory = "all";
+  let searchQuery = "";
+  let featuredOnly = false;
+  let sortMode = "default";
 
   const CATEGORY_LABEL = {
-    breakfast: "صبحانه",
-    iranian: "غذای ایرانی",
-    kebab: "کباب‌ها",
-    appetizer: "پیش‌غذا و دسر",
-    drinks: "نوشیدنی",
+    breakfast: "صبحانه و تابه‌های مسی",
+    iranian: "غذاهای اصیل ایرانی",
+    kebab: "کباب‌های ذغالی و چلو",
+    appetizer: "پیش‌غذا، سوپ و سالاد",
+    drinks: "چای و نوشیدنی‌های سرد",
   };
 
-  const filterItems = () =>
-    items.filter((item) => {
-      if (category !== "all" && item.category !== category) return false;
-      if (!query) return true;
-      const hay = normalize(`${item.title} ${item.desc} ${item.section}`);
-      return hay.includes(normalize(query));
+  const updateTabCounts = () => {
+    document.querySelectorAll("[data-count-for]").forEach((el) => {
+      const cat = el.getAttribute("data-count-for");
+      const count =
+        cat === "all" ? items.length : items.filter((i) => i.category === cat).length;
+      el.textContent = toPersianDigits(count);
+    });
+  };
+
+  const getFilteredItems = () => {
+    const q = normalize(searchQuery);
+    let result = items.filter((item) => {
+      if (activeCategory !== "all" && item.category !== activeCategory) return false;
+      if (featuredOnly && !item.featured && !item.badge) return false;
+      if (!q) return true;
+      const hay = normalize(`${item.title} ${item.desc} ${item.section} ${item.badge || ""}`);
+      return hay.includes(q);
     });
 
-  const renderLine = (item) => {
+    if (sortMode === "price-asc") {
+      result = [...result].sort((a, b) => {
+        const pa = Number(a.price) || 999999999;
+        const pb = Number(b.price) || 999999999;
+        return pa - pb;
+      });
+    } else if (sortMode === "price-desc") {
+      result = [...result].sort((a, b) => {
+        const pa = Number(a.price) || 0;
+        const pb = Number(b.price) || 0;
+        return pb - pa;
+      });
+    }
+    return result;
+  };
+
+  const renderMenuCard = (item, idx) => {
     const price = formatPrice(item.price);
     const priceHtml = price
-      ? `<span class="menu-item-price">${escapeHtml(price)} تومان</span>`
-      : `<span class="menu-item-price is-tbd">${REVIEW}</span>`;
-    const desc = item.desc ? `<p class="menu-item-desc">${escapeHtml(item.desc)}</p>` : "";
-    return `<li class="menu-item"><h3 class="menu-item-name">${escapeHtml(item.title)}</h3>${desc}${priceHtml}</li>`;
+      ? `<span class="item-price">${escapeHtml(price)} <small>تومان</small></span>`
+      : `<span class="item-price is-tbd">${REVIEW_TEXT}</span>`;
+
+    const badgeHtml = item.badge
+      ? `<span class="item-badge">${escapeHtml(item.badge)}</span>`
+      : "";
+    const descHtml = item.desc
+      ? `<p class="item-desc">${escapeHtml(item.desc)}</p>`
+      : "";
+    const qtyInTray = trayState.get(item.id) || 0;
+    const btnLabel = qtyInTray > 0 ? `✓ در میز (${toPersianDigits(qtyInTray)})` : "+ انتخاب";
+    const btnClass = qtyInTray > 0 ? "item-add-btn in-tray" : "item-add-btn";
+    const delayMs = Math.min(idx * 25, 250);
+
+    return `
+      <li class="menu-item-card" style="animation-delay: ${delayMs}ms">
+        <button
+          type="button"
+          class="item-thumb-btn"
+          data-open-modal="${escapeHtml(item.id)}"
+          aria-label="مشاهده تصویر بزرگ ${escapeHtml(item.title)}"
+        >
+          <img
+            src="${escapeHtml(item.image || FALLBACK_IMG)}"
+            alt="${escapeHtml(item.title)}"
+            loading="lazy"
+            onerror="this.onerror=null;this.src='${FALLBACK_IMG}';"
+          />
+        </button>
+        <div class="item-content">
+          <div class="item-top-row">
+            <h4 class="item-name">${escapeHtml(item.title)}</h4>
+            ${badgeHtml}
+          </div>
+          ${descHtml}
+          <div class="item-bottom-row">
+            ${priceHtml}
+            <button type="button" class="${btnClass}" data-add-id="${escapeHtml(item.id)}">
+              ${btnLabel}
+            </button>
+          </div>
+        </div>
+      </li>
+    `;
   };
 
   const renderMenu = () => {
     if (!board) return;
-    const filtered = filterItems();
+    const filtered = getFilteredItems();
     board.innerHTML = "";
+
+    if (summaryEl) {
+      summaryEl.textContent = `نمایش ${toPersianDigits(filtered.length)} مورد از ${toPersianDigits(items.length)} عنوان منو`;
+    }
     if (emptyEl) emptyEl.hidden = filtered.length > 0;
     if (!filtered.length) return;
 
@@ -146,13 +368,20 @@
     });
 
     const order = ["breakfast", "iranian", "kebab", "appetizer", "drinks"];
+    let globalIdx = 0;
+
     order.forEach((catKey) => {
       const catItems = byCat.get(catKey);
       if (!catItems?.length) return;
 
-      const block = document.createElement("div");
+      const block = document.createElement("section");
       block.className = "menu-block";
-      block.innerHTML = `<h3 class="menu-block-title">${escapeHtml(CATEGORY_LABEL[catKey] || catKey)}</h3>`;
+      block.innerHTML = `
+        <div class="menu-block-header">
+          <h3 class="menu-block-title">${escapeHtml(CATEGORY_LABEL[catKey] || catKey)}</h3>
+          <span>${toPersianDigits(catItems.length)} مورد</span>
+        </div>
+      `;
 
       const bySection = new Map();
       catItems.forEach((item) => {
@@ -162,18 +391,16 @@
       });
 
       bySection.forEach((sectionItems, sectionName) => {
-        const showSub =
-          catKey === "breakfast" && ["املت", "نیمرو", "بشقاب و خوراک"].includes(sectionName);
-        if (showSub) {
-          const sub = document.createElement("div");
-          sub.innerHTML = `<h4 class="menu-subtitle">${escapeHtml(sectionName)}</h4><ul class="menu-items">${sectionItems.map(renderLine).join("")}</ul>`;
-          block.appendChild(sub);
-        } else {
-          const ul = document.createElement("ul");
-          ul.className = "menu-items";
-          ul.innerHTML = sectionItems.map(renderLine).join("");
-          block.appendChild(ul);
-        }
+        const sub = document.createElement("div");
+        sub.className = "menu-sub-block";
+        const showSubHeading = bySection.size > 1;
+        sub.innerHTML = `
+          ${showSubHeading ? `<h4 class="menu-subtitle">${escapeHtml(sectionName)}</h4>` : ""}
+          <ul class="menu-items">
+            ${sectionItems.map((it) => renderMenuCard(it, globalIdx++)).join("")}
+          </ul>
+        `;
+        block.appendChild(sub);
       });
 
       board.appendChild(block);
@@ -182,7 +409,7 @@
 
   tabs.forEach((tab) => {
     tab.addEventListener("click", () => {
-      category = tab.dataset.category || "all";
+      activeCategory = tab.dataset.category || "all";
       tabs.forEach((t) => {
         const on = t === tab;
         t.classList.toggle("is-active", on);
@@ -193,670 +420,305 @@
   });
 
   searchInput?.addEventListener("input", (e) => {
-    query = e.target.value;
+    searchQuery = e.target.value;
+    if (searchClear) searchClear.hidden = !searchQuery;
     renderMenu();
   });
 
-  renderMenu();
+  searchClear?.addEventListener("click", () => {
+    if (!searchInput) return;
+    searchInput.value = "";
+    searchQuery = "";
+    searchClear.hidden = true;
+    searchInput.focus();
+    renderMenu();
+  });
+
+  featuredFilterBtn?.addEventListener("click", () => {
+    featuredOnly = !featuredOnly;
+    featuredFilterBtn.setAttribute("aria-pressed", featuredOnly ? "true" : "false");
+    renderMenu();
+  });
+
+  sortSelect?.addEventListener("change", (e) => {
+    sortMode = e.target.value;
+    renderMenu();
+  });
+
+  viewButtons.forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const view = btn.dataset.view;
+      viewButtons.forEach((b) => b.classList.toggle("is-active", b === btn));
+      board?.classList.toggle("is-compact", view === "compact");
+    });
+  });
+
+  resetFiltersBtn?.addEventListener("click", () => {
+    activeCategory = "all";
+    searchQuery = "";
+    featuredOnly = false;
+    sortMode = "default";
+    if (searchInput) searchInput.value = "";
+    if (searchClear) searchClear.hidden = true;
+    if (featuredFilterBtn) featuredFilterBtn.setAttribute("aria-pressed", "false");
+    if (sortSelect) sortSelect.value = "default";
+    tabs.forEach((t) => {
+      const on = t.dataset.category === "all";
+      t.classList.toggle("is-active", on);
+      t.setAttribute("aria-selected", on ? "true" : "false");
+    });
+    renderMenu();
+  });
+
+  /* ─── 6. Table Selection Tray ("میز من") ─── */
+  const trayState = new Map(); // id -> quantity
+  const headerTrayCount = document.getElementById("header-tray-count");
+  const floatingTrayBar = document.getElementById("floating-tray-bar");
+  const floatingTrayCount = document.getElementById("floating-tray-count");
+  const floatingTrayTotal = document.getElementById("floating-tray-total");
+  const trayBackdrop = document.getElementById("tray-drawer-backdrop");
+  const trayItemsList = document.getElementById("tray-items-list");
+  const trayTotalAmount = document.getElementById("tray-total-amount");
+  const trayWaLink = document.getElementById("tray-wa-link");
+
+  const updateTrayUI = () => {
+    let totalCount = 0;
+    let totalPrice = 0;
+    const lines = [];
+
+    trayState.forEach((qty, id) => {
+      const item = itemById.get(id);
+      if (!item || qty <= 0) return;
+      totalCount += qty;
+      const unitPrice = Number(String(item.price || "").replace(/\D/g, "")) || 0;
+      totalPrice += unitPrice * qty;
+      lines.push(`• ${item.title} (${toPersianDigits(qty)} عدد)`);
+    });
+
+    if (headerTrayCount) {
+      headerTrayCount.hidden = totalCount === 0;
+      headerTrayCount.textContent = toPersianDigits(totalCount);
+    }
+
+    if (floatingTrayBar) {
+      floatingTrayBar.hidden = totalCount === 0;
+    }
+    if (floatingTrayCount) {
+      floatingTrayCount.textContent = `${toPersianDigits(totalCount)} مورد در میز انتخابی شما`;
+    }
+    if (floatingTrayTotal) {
+      floatingTrayTotal.textContent = `${totalPrice.toLocaleString("fa-IR")} تومان`;
+    }
+    if (trayTotalAmount) {
+      trayTotalAmount.textContent = `${totalPrice.toLocaleString("fa-IR")} تومان`;
+    }
+
+    if (trayItemsList) {
+      if (totalCount === 0) {
+        trayItemsList.innerHTML = `<p style="text-align:center;color:var(--text-muted);padding:2rem 0;">هنوز غذایی به میز خود اضافه نکرده‌اید.</p>`;
+      } else {
+        const rowsHtml = [];
+        trayState.forEach((qty, id) => {
+          const item = itemById.get(id);
+          if (!item) return;
+          const p = formatPrice(item.price);
+          rowsHtml.push(`
+            <div class="tray-row">
+              <div>
+                <h4 class="tray-row-title">${escapeHtml(item.title)}</h4>
+                <span class="tray-row-price">${p ? `${escapeHtml(p)} تومان` : REVIEW_TEXT}</span>
+              </div>
+              <div class="tray-qty-controls">
+                <button type="button" class="qty-btn" data-tray-dec="${escapeHtml(id)}">−</button>
+                <strong>${toPersianDigits(qty)}</strong>
+                <button type="button" class="qty-btn" data-tray-inc="${escapeHtml(id)}">+</button>
+              </div>
+            </div>
+          `);
+        });
+        trayItemsList.innerHTML = rowsHtml.join("");
+      }
+    }
+
+    if (trayWaLink) {
+      const msg = [
+        "سلام رستوران چتر آبی، سفارش/انتخاب من از منوی دیجیتال:",
+        ...lines,
+        `جمع تخمینی: ${totalPrice.toLocaleString("fa-IR")} تومان`,
+      ].join("\n");
+      trayWaLink.href = `https://wa.me/989122794809?text=${encodeURIComponent(msg)}`;
+    }
+
+    renderMenu();
+  };
+
+  const addToTray = (id, delta = 1) => {
+    const current = trayState.get(id) || 0;
+    const next = current + delta;
+    if (next <= 0) {
+      trayState.delete(id);
+    } else {
+      trayState.set(id, next);
+    }
+    updateTrayUI();
+  };
+
+  document.addEventListener("click", (e) => {
+    const addBtn = e.target.closest("[data-add-id]");
+    if (addBtn) {
+      addToTray(addBtn.getAttribute("data-add-id"), 1);
+      return;
+    }
+
+    const incBtn = e.target.closest("[data-tray-inc]");
+    if (incBtn) {
+      addToTray(incBtn.getAttribute("data-tray-inc"), 1);
+      return;
+    }
+
+    const decBtn = e.target.closest("[data-tray-dec]");
+    if (decBtn) {
+      addToTray(decBtn.getAttribute("data-tray-dec"), -1);
+      return;
+    }
+
+    const modalTrigger = e.target.closest("[data-open-modal]");
+    if (modalTrigger) {
+      openDishModal(modalTrigger.getAttribute("data-open-modal"));
+    }
+  });
+
+  const openTrayDrawer = () => {
+    if (trayBackdrop) trayBackdrop.hidden = false;
+  };
+  const closeTrayDrawer = () => {
+    if (trayBackdrop) trayBackdrop.hidden = true;
+  };
+
+  document.getElementById("tray-open-btn")?.addEventListener("click", openTrayDrawer);
+  document.getElementById("floating-tray-open")?.addEventListener("click", openTrayDrawer);
+  document.getElementById("tray-close-btn")?.addEventListener("click", closeTrayDrawer);
+  document.getElementById("tray-clear-btn")?.addEventListener("click", () => {
+    trayState.clear();
+    updateTrayUI();
+  });
+  trayBackdrop?.addEventListener("click", (e) => {
+    if (e.target === trayBackdrop) closeTrayDrawer();
+  });
+
+  /* ─── 7. Dish Lightbox & Photo Comparison Modal ─── */
+  const modalBackdrop = document.getElementById("dish-modal-backdrop");
+  const modalImg = document.getElementById("modal-dish-img");
+  const modalTitle = document.getElementById("modal-dish-title");
+  const modalDesc = document.getElementById("modal-dish-desc");
+  const modalSection = document.getElementById("modal-dish-section");
+  const modalBadge = document.getElementById("modal-dish-badge");
+  const modalPrice = document.getElementById("modal-dish-price");
+  const modalAddBtn = document.getElementById("modal-add-btn");
+  const modalCompareBar = document.getElementById("modal-compare-bar");
+  const modalBtnStudio = document.getElementById("modal-btn-studio");
+  const modalBtnOrig = document.getElementById("modal-btn-orig");
+
+  let activeModalDish = null;
+
+  const openDishModal = (id) => {
+    const dish = itemById.get(id);
+    if (!dish || !modalBackdrop) return;
+    activeModalDish = dish;
+
+    if (modalImg) {
+      modalImg.src = dish.image || FALLBACK_IMG;
+      modalImg.alt = dish.title;
+    }
+    if (modalTitle) modalTitle.textContent = dish.title;
+    if (modalDesc) {
+      modalDesc.textContent =
+        dish.desc || "پخت روزانه با مواد اولیه تازه و درجه یک در رستوران چتر آبی.";
+    }
+    if (modalSection) modalSection.textContent = dish.section || "";
+    if (modalBadge) {
+      modalBadge.hidden = !dish.badge;
+      modalBadge.textContent = dish.badge || "";
+    }
+    if (modalPrice) {
+      const p = formatPrice(dish.price);
+      modalPrice.textContent = p ? `${p} تومان` : REVIEW_TEXT;
+    }
+    if (modalCompareBar) {
+      modalCompareBar.hidden = !dish.originalImage;
+      modalBtnStudio?.classList.add("is-active");
+      modalBtnOrig?.classList.remove("is-active");
+    }
+
+    modalBackdrop.hidden = false;
+  };
+
+  const closeDishModal = () => {
+    if (modalBackdrop) modalBackdrop.hidden = true;
+    activeModalDish = null;
+  };
+
+  modalBtnStudio?.addEventListener("click", () => {
+    if (!activeModalDish || !modalImg) return;
+    modalImg.src = activeModalDish.image || FALLBACK_IMG;
+    modalBtnStudio.classList.add("is-active");
+    modalBtnOrig?.classList.remove("is-active");
+  });
+
+  modalBtnOrig?.addEventListener("click", () => {
+    if (!activeModalDish?.originalImage || !modalImg) return;
+    modalImg.src = activeModalDish.originalImage;
+    modalBtnOrig.classList.add("is-active");
+    modalBtnStudio?.classList.remove("is-active");
+  });
+
+  modalAddBtn?.addEventListener("click", () => {
+    if (activeModalDish) {
+      addToTray(activeModalDish.id, 1);
+      closeDishModal();
+    }
+  });
+
+  document.getElementById("modal-close-btn")?.addEventListener("click", closeDishModal);
+  modalBackdrop?.addEventListener("click", (e) => {
+    if (e.target === modalBackdrop) closeDishModal();
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      closeDishModal();
+      closeTrayDrawer();
+    }
+  });
+
+  /* ─── 8. Share Button & Footer Year ─── */
+  document.getElementById("share-menu-btn")?.addEventListener("click", async (e) => {
+    const btn = e.currentTarget;
+    const shareUrl = window.location.href;
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "منوی دیجیتال رستوران چتر آبی",
+          url: shareUrl,
+        });
+        return;
+      } catch (_) {}
+    }
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      const prev = btn.textContent;
+      btn.textContent = "لینک منو کپی شد ✓";
+      setTimeout(() => {
+        btn.textContent = prev;
+      }, 2000);
+    } catch (_) {}
+  });
 
   const yearEl = document.getElementById("year");
-  if (yearEl) yearEl.textContent = String(new Date().getFullYear());
+  if (yearEl) yearEl.textContent = toPersianDigits(new Date().getFullYear());
+
+  /* Initial Render */
+  updateTabCounts();
+  renderFeatured();
+  renderMenu();
 })();
-const MENU_DATA = [
-  {
-    "title": "املت گوجه",
-    "price": "300000",
-    "desc": "تخم مرغ، گوجه، کره، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/املت-ساده.jpg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "املت درباری",
-    "price": "420000",
-    "desc": "تخم مرغ، گوجه، کره،پنیر گودا، ژامبون، قارچ، خلال سیب زمینی وهویج، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/املت-درباری.jpg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "املت تبریزی",
-    "price": "350000",
-    "desc": "تخم مرغ، گوجه، کره، پنیر، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-23-at-10.39.00-AM-1-e1748088952337.jpeg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "املت شاپوری",
-    "price": "350000",
-    "desc": "تخم مرغ، گوجه، کره، پیازداغ، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-23-at-10.39.00-AM-2-e1748089048578.jpeg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "املت سوسیس",
-    "price": "350000",
-    "desc": "تخم مرغ، گوجه، کره، سوسیس، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "املت قارچ و سوسیس",
-    "price": "380000",
-    "desc": "تخم مرغ، گوجه، کره، قارچ، سوسیس، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "املت",
-    "category": "breakfast"
-  },
-  {
-    "title": "نیمرو ساده",
-    "price": "260000",
-    "desc": "تخم مرغ، کره، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/نیمرو-ساده.jpg",
-    "section": "نیمرو",
-    "category": "breakfast"
-  },
-  {
-    "title": "نیمرو قارچ و سوسیس",
-    "price": "340000",
-    "desc": "تخم مرغ، کره، قارچ، سوسیس، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/املت-قارچ-و-سوسیس.jpg",
-    "section": "نیمرو",
-    "category": "breakfast"
-  },
-  {
-    "title": "نیمرو سوسیس سیب زمینی",
-    "price": "380000",
-    "desc": "تخم مرغ، کره، تن ماهی، قارچ، دورچین، نان ،چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نیمرو",
-    "category": "breakfast"
-  },
-  {
-    "title": "میز درباری",
-    "price": "1600000",
-    "desc": "4 نفره",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "بشقاب تست وسیب زمینی",
-    "price": "380000",
-    "desc": "سیب زمینی سرخ کرده، تست مغزدار پنیر و کالباس، سالاد",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "بشقاب ایرانی",
-    "price": "380000",
-    "desc": "تخم مرغ آب پز، خامه، پنیر،خیار، گوجه، کره، مربا، حلوا شکری",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/بشقاب-ایرانی.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "بشقاب ایرانی",
-    "price": "380000",
-    "desc": "تخم مرغ آب پز، خامه، پنیر،خیار، گوجه، کره، مربا، حلوا شکری",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/بشقاب-ایرانی.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "قیساوا",
-    "price": "350000",
-    "desc": "تخم مرغ، کره، خرما، دارچین، پودر گل سرخ، مغزهای خوراکی، نان، چای",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/قیساوا.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "خوراک لوبیا و قارچ",
-    "price": "300000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "بورک مخصوص",
-    "price": "350000",
-    "desc": "بورک  5 عدد",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "بشقاب و خوراک",
-    "category": "breakfast"
-  },
-  {
-    "title": "باقالی پلو با ماهیچه",
-    "price": "1850000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318515-e1746292580230.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "باقالی پلو با گوشت",
-    "price": "1300000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318530-e1746443971850.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "چلو ماهیچه",
-    "price": "1550000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "چلو گوشت",
-    "price": "1200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "باقالی پلو با مرغ ران",
-    "price": "850000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318512.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "باقالی پلو با مرغ سینه",
-    "price": "870000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "زرشک پلو درباری سینه",
-    "price": "870000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/IMG_20240601_220854_468.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "زرشک پلو درباری ران",
-    "price": "850000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-23-at-10.39.00-AM-4-e1748089615431.jpeg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "زرشک پلومخصوص ران",
-    "price": "690000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "زرشک پلومخصوص سینه",
-    "price": "710000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خوراک مرغ ران",
-    "price": "530000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خوراک مرغ سینه",
-    "price": "550000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین پلو با مرغ سینه",
-    "price": "890000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318506-e1746445004744.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین پلو با مرغ ران",
-    "price": "870000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین قالبی مرغ",
-    "price": "750000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318533-e1746445122535.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین قالبی گوشت",
-    "price": "840000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318602-e1746445288268.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت فسنجان ران",
-    "price": "800000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت فسنجان سینه",
-    "price": "820000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت قورمه سبزی",
-    "price": "690000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/IMG_20241118_154008_773.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت قیمه",
-    "price": "690000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/IMG_20241118_154017_729.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "میکس قیمه و قرمه سبزی",
-    "price": "760000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت قیمه بادمجان",
-    "price": "720000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت بادمجان",
-    "price": "690000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318573-e1746445626312.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین با خورشت قرمه سبزی",
-    "price": "790000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318538-e1746445680474.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "ته چین با خورشت قیمه",
-    "price": "790000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت هویج با آلو گوشت",
-    "price": "690000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/04/IMG_20240601_221649_902-e1748364526310.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت هویج با آلو ران",
-    "price": "800000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "خورشت هویج با آلو سینه",
-    "price": "820000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "غذای ایرانی",
-    "category": "iranian"
-  },
-  {
-    "title": "چلو برگ مخصوص",
-    "price": "",
-    "desc": "250 گرم راسته گوسفندی",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو برگ نیمه مخصوص",
-    "price": "",
-    "desc": "200 گرم راسته گوسفندی",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو کوبیده مخصوص",
-    "price": "1150000",
-    "desc": "220 گرم",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو کوبیده نیمه مخصوص",
-    "price": "880000",
-    "desc": "150 گرم",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو کوبیده دو سیخ",
-    "price": "1600000",
-    "desc": "دو سیخ 150 گرمی برنج ایرانی",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو جوجه کباب مخصوص",
-    "price": "900000",
-    "desc": "300 گرم",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلو جوجه کباب نیمه مخصوص",
-    "price": "730000",
-    "desc": "200 گرم",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "کباب تابه ای با چلو",
-    "price": "980000",
-    "desc": "150 گرم",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/WhatsApp-Image-2025-05-23-at-10.39.00-AM-9-e1748089490728.jpeg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چلوکره",
-    "price": "230000",
-    "desc": "300 گرم برنج ایرانی",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "کبابها",
-    "category": "kebab"
-  },
-  {
-    "title": "چیکن استراگانف",
-    "price": "650000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "کوکو لوبیا",
-    "price": "400000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "کشک بادمجان",
-    "price": "400000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "گارنی یاریخ",
-    "price": "450000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "خوراک زبان با سس قارچ",
-    "price": "700000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "خوراک زبان",
-    "price": "600000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318545-e1748365445924.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "بورک مخصوص",
-    "price": "350000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "دلمه برگ مو",
-    "price": "350000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/1704372318615.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "سیب زمینی",
-    "price": "350000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "سوپ خامه",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "سوپ زعفران",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "ماست",
-    "price": "100000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "زیتون",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "ترشی",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "سالاد فصل",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "سالاد شیرازی",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "پیش غذا ودسر",
-    "category": "appetizer"
-  },
-  {
-    "title": "آب پرتقال",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "فانتارز",
-    "price": "170000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "کولالاو",
-    "price": "160000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "موهیتو",
-    "price": "195000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "سودا",
-    "price": "90000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "سودا لیمو",
-    "price": "115000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "لیموناد",
-    "price": "200000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "چای قوری",
-    "price": "200000",
-    "desc": "سه نفره",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "چای",
-    "price": "70000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "دوغ محلی لیوانی",
-    "price": "130000",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "نوشابه فلزی",
-    "price": "",
-    "desc": "کوکا - فانتا -اسپرایت",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "دلستر فلزی",
-    "price": "",
-    "desc": "لیمو",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  },
-  {
-    "title": "آب معدنی کوچک",
-    "price": "",
-    "desc": "",
-    "image": "https://chatreabi.ir/wp-content/uploads/2025/05/544a0f23-f561-4d51-8b65-a89da549a9d0.jpg",
-    "section": "نوشیدنی",
-    "category": "drinks"
-  }
-];

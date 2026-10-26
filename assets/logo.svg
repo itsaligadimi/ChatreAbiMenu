@@ -1,61 +1,102 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 188" role="img" aria-label="Blue Umbrella Restaurant">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 360 220" role="img" aria-labelledby="logo-title logo-desc">
+  <title id="logo-title">رستوران چتر آبی — Blue Umbrella Restaurant</title>
+  <desc id="logo-desc">لوگوی مدرن و مینیمال رستوران چتر آبی؛ ترکیب چتر آبی لاجوردی و سرپوش غذای اصیل ایرانی</desc>
   <defs>
-    <pattern id="umbrella-check" width="12" height="12" patternUnits="userSpaceOnUse" patternTransform="rotate(45)">
-      <rect width="6" height="12" fill="#67c3e8"/>
-      <rect x="6" width="6" height="12" fill="#edf7fd"/>
-    </pattern>
-    <linearGradient id="script-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#72ccee"/>
-      <stop offset="100%" stop-color="#3d9fd4"/>
+    <linearGradient id="royal-navy" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f3c68" />
+      <stop offset="100%" stop-color="#071e36" />
+    </linearGradient>
+    <linearGradient id="cerulean" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#4cc9f0" />
+      <stop offset="100%" stop-color="#1669a8" />
+    </linearGradient>
+    <linearGradient id="azure-bright" x1="50%" y1="0%" x2="50%" y2="100%">
+      <stop offset="0%" stop-color="#80ffdb" stop-opacity="0.2" />
+      <stop offset="15%" stop-color="#72ddf7" />
+      <stop offset="100%" stop-color="#1d84c6" />
+    </linearGradient>
+    <linearGradient id="saffron-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#c89228" />
+      <stop offset="50%" stop-color="#f3cd74" />
+      <stop offset="100%" stop-color="#c89228" />
     </linearGradient>
   </defs>
 
-  <g transform="translate(140 6)">
+  <g transform="translate(180, 78)">
     <path
-      d="M-68 6 A68 68 0 0 1 68 6 L68 16 C68 16 38 36 0 32 C-38 36 -68 16 -68 16 Z"
-      fill="url(#umbrella-check)"
-      stroke="#184f87"
-      stroke-width="5.5"
-      stroke-linejoin="round"
+      d="M-68 6 A68 68 0 0 1 68 6"
+      fill="none"
+      stroke="url(#saffron-gold)"
+      stroke-width="2"
+      stroke-linecap="round"
+    />
+    <circle cx="0" cy="-69" r="3.8" fill="url(#saffron-gold)" />
+    <path
+      d="M-4 -59 C-35 -56 -60 -32 -63 3 C-50 -4 -37 -3 -28 4 C-25 -26 -14 -48 -4 -59 Z"
+      fill="url(#royal-navy)"
     />
     <path
-      d="M-68 16 C-44 30 -22 26 0 28 C22 26 44 30 68 16"
+      d="M-2 -59 C-12 -48 -22 -26 -25 4 C-17 -3 -9 -3 -2 4 Z"
+      fill="url(#cerulean)"
+    />
+    <path
+      d="M2 -59 L2 4 C9 -3 17 -3 25 4 C22 -26 12 -48 2 -59 Z"
+      fill="url(#azure-bright)"
+    />
+    <path
+      d="M4 -59 C14 -48 25 -26 28 4 C37 -3 50 -4 63 3 C60 -32 35 -56 4 -59 Z"
+      fill="url(#royal-navy)"
+    />
+    <path
+      d="M0 4 L0 25 C0 33 -11 33 -11 25.5"
       fill="none"
-      stroke="#184f87"
-      stroke-width="5"
+      stroke="url(#royal-navy)"
+      stroke-width="3.8"
       stroke-linecap="round"
     />
     <path
-      d="M-54 19 C-34 31 -16 27 0 29 C16 27 34 31 54 19"
+      d="M-48 16 Q0 28 48 16"
       fill="none"
-      stroke="#184f87"
-      stroke-width="3.5"
+      stroke="url(#saffron-gold)"
+      stroke-width="2.2"
       stroke-linecap="round"
-      opacity="0.9"
     />
   </g>
 
   <text
-    x="98"
-    y="112"
-    font-family="Segoe UI, Helvetica Neue, Arial, sans-serif"
-    font-size="48"
+    x="180"
+    y="150"
+    text-anchor="middle"
+    font-family="Vazirmatn, system-ui, sans-serif"
+    font-size="35"
     font-weight="800"
-    fill="#184f87"
-  >Blue</text>
+    fill="#071e36"
+  >چتر آبی</text>
 
   <text
-    x="108"
-    y="144"
-    font-family="Segoe Script, Brush Script MT, Snell Roundhand, cursive"
-    font-size="34"
-    fill="url(#script-grad)"
-  >Umbrella</text>
+    x="180"
+    y="177"
+    text-anchor="middle"
+    font-family="Vazirmatn, 'Helvetica Neue', Arial, sans-serif"
+    font-size="16.5"
+    font-weight="800"
+    fill="#1669a8"
+    letter-spacing="5.5"
+  >BLUE UMBRELLA</text>
 
-  <g font-family="Segoe UI, Arial, sans-serif" font-size="10" font-weight="600" fill="#184f87" letter-spacing="3.5">
-    <line x1="72" y1="168" x2="98" y2="168" stroke="#184f87" stroke-width="1.4"/>
-    <text x="140" y="172" text-anchor="middle">RESTAURANT</text>
-    <line x1="182" y1="168" x2="208" y2="168" stroke="#184f87" stroke-width="1.4"/>
+  <g transform="translate(180, 198)">
+    <line x1="-78" y1="-3.5" x2="-42" y2="-3.5" stroke="url(#saffron-gold)" stroke-width="1.5" stroke-linecap="round" />
+    <text
+      x="0"
+      y="0"
+      text-anchor="middle"
+      font-family="Vazirmatn, system-ui, sans-serif"
+      font-size="9.5"
+      font-weight="700"
+      fill="#64748b"
+      letter-spacing="3.2"
+    >RESTAURANT</text>
+    <line x1="42" y1="-3.5" x2="78" y2="-3.5" stroke="url(#saffron-gold)" stroke-width="1.5" stroke-linecap="round" />
   </g>
 </svg>

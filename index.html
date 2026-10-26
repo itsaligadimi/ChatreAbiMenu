@@ -1,160 +1,673 @@
 <!DOCTYPE html>
-<html lang="fa" dir="rtl">
+<html lang="fa" dir="rtl" data-theme="light">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <base href="/ChatreAbiMenu/" />
     <meta
       name="description"
-      content="رستوران چتر آبی — منوی غذاهای ایرانی، صبحانه و کباب. قیمت‌ها به تومان."
+      content="رستوران چتر آبی (Blue Umbrella Restaurant) — منوی دیجیتال صبحانه، غذاهای اصیل ایرانی، کباب، پیش‌غذا و نوشیدنی در تبریز. کلیه قیمت‌ها به تومان."
     />
     <meta name="robots" content="index, follow" />
-    <base href="/ChatreAbiMenu/" />
-    <title>رستوران چتر آبی</title>
-    <link rel="icon" href="images/favicon.svg" type="image/svg+xml" />
-    <link rel="icon" href="images/favicon.png" type="image/png" sizes="128x128" />
-    <link rel="stylesheet" href="style.css" />
+    <meta name="theme-color" content="#071e36" />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="fa_IR" />
+    <meta property="og:site_name" content="رستوران چتر آبی" />
+    <meta property="og:title" content="رستوران چتر آبی | منوی دیجیتال و رزرو" />
+    <meta
+      property="og:description"
+      content="طعم اصیل آشپزی ایرانی و صبحانه تبریزی زیر سایه چتر آبی — مشاهده منوی کامل با قیمت روز به تومان."
+    />
+    <meta property="og:image" content="images/food/baghali-mahiche-pro.jpg" />
+    <title>رستوران چتر آبی | Blue Umbrella Restaurant — منوی دیجیتال</title>
+    <link rel="icon" href="images/favicon.svg?v=2" type="image/svg+xml" />
+    <link rel="icon" href="images/favicon.png?v=2" type="image/png" sizes="128x128" />
+    <link rel="stylesheet" href="style.css?v=2" />
   </head>
   <body>
-    <a class="skip-link" href="#menu">رفتن به منو</a>
+    <a class="skip-link" href="#menu">رفتن به منوی رستوران</a>
 
+    <!-- Ambient Architectural Background Layer -->
+    <div class="ambient-canvas" aria-hidden="true">
+      <div class="ambient-orb orb-azure"></div>
+      <div class="ambient-orb orb-gold"></div>
+      <div class="ambient-orb orb-sapphire"></div>
+      <div class="ambient-grid"></div>
+    </div>
+
+    <!-- ─── Sticky Glass Header ─── -->
     <header class="topbar" id="topbar">
-      <a class="topbar-logo" href="#hero" aria-label="چتر آبی — صفحه اصلی">
-        <img
-          class="logo-img"
-          src="images/logo.svg"
-          width="132"
-          height="84"
-          alt="Blue Umbrella Restaurant — رستوران چتر آبی"
-        />
-      </a>
-      <nav class="topbar-nav" aria-label="میانبرها">
-        <button type="button" class="nav-chip" data-scroll="menu">منو</button>
-        <button type="button" class="nav-chip nav-chip-accent" data-scroll="contact">تماس</button>
-      </nav>
+      <div class="topbar-inner">
+        <a class="brand-lockup" href="#hero" aria-label="رستوران چتر آبی — صفحه اصلی">
+          <div class="brand-emblem-wrap" aria-hidden="true">
+            <svg class="brand-emblem-svg" viewBox="0 0 120 96" fill="none">
+              <defs>
+                <linearGradient id="hdr-navy" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#144b82" />
+                  <stop offset="100%" stop-color="#071e36" />
+                </linearGradient>
+                <linearGradient id="hdr-azure" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#72ddf7" />
+                  <stop offset="100%" stop-color="#197bbd" />
+                </linearGradient>
+                <linearGradient id="hdr-gold" x1="0%" y1="0%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#c89228" />
+                  <stop offset="50%" stop-color="#f5d685" />
+                  <stop offset="100%" stop-color="#c89228" />
+                </linearGradient>
+              </defs>
+              <g transform="translate(60, 58)">
+                <path class="emblem-halo" d="M-48 4 A48 48 0 0 1 48 4" stroke="url(#hdr-gold)" stroke-width="1.8" stroke-linecap="round" />
+                <circle class="emblem-finial" cx="0" cy="-49" r="3" fill="url(#hdr-gold)" />
+                <path class="canopy-wing wing-outer-l" d="M-3 -42 C-25 -40 -42 -22 -44 2 C-35 -3 -26 -2 -20 3 C-18 -18 -10 -34 -3 -42 Z" fill="url(#hdr-navy)" />
+                <path class="canopy-wing wing-inner-l" d="M-1.5 -42 C-9 -34 -16 -18 -18 3 C-12 -2 -6 -2 -1.5 3 Z" fill="url(#hdr-azure)" />
+                <path class="canopy-wing wing-inner-r" d="M1.5 -42 L1.5 3 C6 -2 12 -2 18 3 C16 -18 9 -34 1.5 -42 Z" fill="url(#hdr-azure)" />
+                <path class="canopy-wing wing-outer-r" d="M3 -42 C10 -34 18 -18 20 3 C26 -2 35 -3 44 2 C42 -22 25 -40 3 -42 Z" fill="url(#hdr-navy)" />
+                <path class="emblem-handle" d="M0 3 L0 19 C0 25 -8 25 -8 19" stroke="url(#hdr-gold)" stroke-width="2.8" stroke-linecap="round" />
+                <path class="emblem-cloche" d="M-34 12 Q0 21 34 12" stroke="url(#hdr-gold)" stroke-width="1.8" stroke-linecap="round" />
+              </g>
+            </svg>
+          </div>
+          <div class="brand-text">
+            <span class="brand-title-fa">چتر آبی</span>
+            <span class="brand-title-en">BLUE UMBRELLA</span>
+          </div>
+        </a>
+
+        <nav class="topbar-nav" aria-label="ناوبری اصلی">
+          <button type="button" class="nav-link" data-scroll="featured">پیشنهاد سرآشپز</button>
+          <button type="button" class="nav-link" data-scroll="menu">منوی کامل</button>
+          <button type="button" class="nav-link" data-scroll="brand-story">هویت بصری</button>
+          <button type="button" class="nav-link" data-scroll="contact">تماس و رزرو</button>
+        </nav>
+
+        <div class="topbar-actions">
+          <button
+            type="button"
+            class="icon-btn"
+            id="theme-toggle"
+            aria-label="تغییر حالت نمایش روز و شب"
+            title="حالت روز / شب سلطنتی"
+          >
+            <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
+            </svg>
+            <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+            </svg>
+          </button>
+
+          <button
+            type="button"
+            class="tray-trigger"
+            id="tray-open-btn"
+            aria-label="مشاهده یادداشت سفارش میز"
+          >
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 17h18M5 17a7 7 0 0 1 14 0M12 7v3" />
+              <circle cx="12" cy="6" r="1.5" />
+            </svg>
+            <span class="tray-trigger-label">میز من</span>
+            <span class="tray-badge" id="header-tray-count" hidden>۰</span>
+          </button>
+
+          <a class="call-pill" href="tel:+984133312437">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z" />
+            </svg>
+            <span dir="ltr">041 3331 2437</span>
+          </a>
+        </div>
+      </div>
     </header>
 
-    <section class="hero" id="hero" aria-labelledby="hero-title">
-      <div class="hero-bg" aria-hidden="true">
-        <div class="blob blob-1"></div>
-        <div class="blob blob-2"></div>
-        <div class="blob blob-3"></div>
-      </div>
+    <main>
+      <!-- ─── Hero Section ─── -->
+      <section class="hero" id="hero" aria-labelledby="hero-title">
+        <div class="hero-container">
+          <!-- Hero Text & Story Column -->
+          <div class="hero-copy">
+            <div class="hero-pill">
+              <span class="status-dot" aria-hidden="true"></span>
+              <span>رستوران چتر آبی تبریز · صبحانه، ناهار و شام</span>
+            </div>
 
-      <div class="hero-stage" id="hero-stage" aria-hidden="true">
-        <figure class="plate plate-1" data-depth="0.35">
-          <span class="plate-rim"></span>
-          <img src="images/food/omelet-darbary.jpg" alt="" width="280" height="280" />
-        </figure>
-        <figure class="plate plate-2" data-depth="0.55">
-          <span class="plate-rim"></span>
-          <img src="images/food/baghali-mahiche.jpg" alt="" width="320" height="320" />
-        </figure>
-        <figure class="plate plate-3" data-depth="0.25">
-          <span class="plate-rim"></span>
-          <img src="images/food/zereshk-polo.jpg" alt="" width="260" height="260" />
-        </figure>
-        <figure class="plate plate-4" data-depth="0.45">
-          <span class="plate-rim"></span>
-          <img src="images/food/qisawa.jpg" alt="" width="240" height="240" />
-        </figure>
-        <figure class="plate plate-5" data-depth="0.65">
-          <span class="plate-rim"></span>
-          <img src="images/food/ghormeh.jpg" alt="" width="220" height="220" />
-        </figure>
-        <figure class="plate plate-6" data-depth="0.3">
-          <span class="plate-rim"></span>
-          <img src="images/food/iranian-plate.jpg" alt="" width="250" height="250" />
-        </figure>
-      </div>
+            <h1 id="hero-title" class="hero-headline">
+              زیر سایهٔ <span class="text-gradient-azure">چتر آبی</span>،
+              <br />
+              طعم اصیلِ مهمان‌نوازی ایرانی
+            </h1>
 
-      <div class="hero-content">
-        <p class="hero-kicker">رستوران چتر آبی</p>
-        <h1 id="hero-title">طعم اصیل، بشقاب‌هایی که خودشان حرف می‌زنند</h1>
-        <p class="hero-lead">
-          صبحانه، غذای ایرانی و کباب — منوی کامل با قیمت به <strong>تومان</strong>. همین‌جا مرور کنید یا
-          برای رزرو تماس بگیرید.
-        </p>
-        <div class="hero-cta">
-          <button type="button" class="btn btn-primary" data-scroll="menu">مشاهده منو</button>
-          <button type="button" class="btn btn-ghost" data-scroll="contact">تماس با ما</button>
+            <p class="hero-lead">
+              از املت درباری و قیساوای داغ در تابه مسی تا باقالی‌پلو با ماهیچه گوسفندی، ته‌چین زعفرانی و
+              کباب‌های ذغالی؛ تجربه‌ای چشم‌نواز با عطر زعفران سرگل و برنج ۱۰۰٪ اصیل ایرانی.
+            </p>
+
+            <div class="hero-cta-row">
+              <button type="button" class="btn btn-royal" data-scroll="menu">
+                <span>مشاهده منوی دیجیتال</span>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 5v14M5 12l7 7 7-7" />
+                </svg>
+              </button>
+              <button type="button" class="btn btn-outline-gold" data-scroll="featured">
+                <span>ویترین سرآشپز</span>
+              </button>
+              <a class="btn btn-ghost-call" href="https://wa.me/989122794809" target="_blank" rel="noopener noreferrer">
+                <span>رزرو واتساپ</span>
+              </a>
+            </div>
+
+            <!-- Key Culinary Highlights -->
+            <div class="hero-metrics" role="list" aria-label="ویژگی‌های رستوران">
+              <div class="metric-item" role="listitem">
+                <strong class="metric-val">۶۳+</strong>
+                <span class="metric-lbl">عنوان غذا و نوشیدنی</span>
+              </div>
+              <div class="metric-divider" aria-hidden="true"></div>
+              <div class="metric-item" role="listitem">
+                <strong class="metric-val">۱۰۰٪</strong>
+                <span class="metric-lbl">برنج و زعفران ایرانی</span>
+              </div>
+              <div class="metric-divider" aria-hidden="true"></div>
+              <div class="metric-item" role="listitem">
+                <strong class="metric-val">۵ بخش</strong>
+                <span class="metric-lbl">صبحانه تا کباب مجلسی</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Hero Interactive 3D / Orbital Platter Stage -->
+          <div class="hero-stage-wrap" id="hero-stage">
+            <div class="stage-turntable">
+              <!-- Decorative Persian Geometric Rings -->
+              <div class="turntable-ring ring-outer" aria-hidden="true"></div>
+              <div class="turntable-ring ring-inner" aria-hidden="true"></div>
+
+              <!-- Animated Steam Wisps over Hot Dish -->
+              <div class="steam-layer" aria-hidden="true">
+                <span class="steam-wisp wisp-1"></span>
+                <span class="steam-wisp wisp-2"></span>
+                <span class="steam-wisp wisp-3"></span>
+              </div>
+
+              <!-- Central Showcase Plate -->
+              <div class="hero-main-plate" id="hero-main-plate">
+                <div class="plate-porcelain-rim"></div>
+                <img
+                  id="hero-active-img"
+                  src="images/food/baghali-mahiche-pro.jpg"
+                  alt="باقالی پلو با ماهیچه مخصوص چتر آبی"
+                  width="460"
+                  height="460"
+                  fetchpriority="high"
+                />
+                <span class="hero-photo-badge" id="hero-photo-badge">عکاسی استودیویی بازطراحی‌شده</span>
+              </div>
+
+              <!-- Orbital Selector Thumbnails -->
+              <div class="orbital-plates" role="tablist" aria-label="انتخاب بشقاب نمونه در ویترین">
+                <button
+                  type="button"
+                  class="orbit-plate is-active"
+                  role="tab"
+                  aria-selected="true"
+                  data-dish-id="ir-baghali-mahiche"
+                  style="--angle: -45deg"
+                  title="باقالی پلو با ماهیچه"
+                >
+                  <img src="images/food/baghali-mahiche-pro.jpg" alt="باقالی پلو با ماهیچه" width="76" height="76" />
+                </button>
+                <button
+                  type="button"
+                  class="orbit-plate"
+                  role="tab"
+                  aria-selected="false"
+                  data-dish-id="om-darbari"
+                  style="--angle: 15deg"
+                  title="املت درباری"
+                >
+                  <img src="images/food/omelet-darbary-pro.jpg" alt="املت درباری" width="76" height="76" />
+                </button>
+                <button
+                  type="button"
+                  class="orbit-plate"
+                  role="tab"
+                  aria-selected="false"
+                  data-dish-id="kb-koobideh-2"
+                  style="--angle: 75deg"
+                  title="چلو کوبیده دو سیخ"
+                >
+                  <img src="images/food/kebab-platter-pro.jpg" alt="چلو کباب کوبیده" width="76" height="76" />
+                </button>
+                <button
+                  type="button"
+                  class="orbit-plate"
+                  role="tab"
+                  aria-selected="false"
+                  data-dish-id="ir-tahchin-sine"
+                  style="--angle: 135deg"
+                  title="ته چین پلو با مرغ"
+                >
+                  <img src="images/food/tahchin-royal-pro.jpg" alt="ته چین زعفرانی" width="76" height="76" />
+                </button>
+                <button
+                  type="button"
+                  class="orbit-plate"
+                  role="tab"
+                  aria-selected="false"
+                  data-dish-id="ir-zereshk-darbari-sine"
+                  style="--angle: 195deg"
+                  title="زرشک پلو درباری"
+                >
+                  <img src="images/food/zereshk-polo-pro.jpg" alt="زرشک پلو درباری" width="76" height="76" />
+                </button>
+                <button
+                  type="button"
+                  class="orbit-plate"
+                  role="tab"
+                  aria-selected="false"
+                  data-dish-id="pl-qisawa"
+                  style="--angle: 255deg"
+                  title="قیساوا تبریزی"
+                >
+                  <img src="images/food/qisawa-pro.jpg" alt="قیساوا تبریزی" width="76" height="76" />
+                </button>
+              </div>
+            </div>
+
+            <!-- Floating Dish Spotlight Card -->
+            <div class="hero-dish-card" id="hero-dish-card" aria-live="polite">
+              <div class="hero-dish-meta">
+                <span class="hero-dish-tag" id="hero-dish-tag">شاهکار سرآشپز</span>
+                <button
+                  type="button"
+                  class="photo-compare-chip"
+                  id="hero-compare-btn"
+                  title="مقایسه عکس بازطراحی‌شده با عکس اصلی"
+                >
+                  <span>مقایسه با عکس اصلی</span>
+                </button>
+              </div>
+              <div class="hero-dish-main">
+                <div>
+                  <h2 class="hero-dish-title" id="hero-dish-title">باقالی پلو با ماهیچه</h2>
+                  <p class="hero-dish-desc" id="hero-dish-desc">
+                    ماهیچه گوسفندی تازه پخته‌شده در عصاره زعفران و پیازداغ، همراه با باقالی‌پلو با شوید تازه
+                  </p>
+                </div>
+                <div class="hero-dish-action">
+                  <span class="hero-dish-price" id="hero-dish-price">۱٬۸۵۰٬۰۰۰ <small>تومان</small></span>
+                  <button type="button" class="btn-add-mini" id="hero-add-btn" data-id="ir-baghali-mahiche">
+                    + افزودن به میز
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Chef's Signature Showcase (ویترین ویژه سرآشپز) ─── -->
+      <section class="featured-section" id="featured" aria-labelledby="featured-title">
+        <div class="section-container">
+          <div class="section-head">
+            <div>
+              <span class="section-kicker">CHEF’S SIGNATURE COLLECTION</span>
+              <h2 id="featured-title" class="section-title">ویترین بشقاب‌های برگزیده چتر آبی</h2>
+              <p class="section-subtitle">
+                تصاویر اختصاصی بشقاب‌های محبوب ما — با قابلیت مقایسهٔ عکاسی استودیویی جدید و تصویر اولیه منو.
+              </p>
+            </div>
+            <div class="photo-mode-switch" role="group" aria-label="حالت نمایش تصاویر">
+              <button type="button" class="mode-pill is-active" id="mode-studio-btn">
+                نمای استودیویی جدید ✨
+              </button>
+              <button type="button" class="mode-pill" id="mode-original-btn">
+                عکس‌های اولیه رستوران
+              </button>
+            </div>
+          </div>
+
+          <div class="featured-grid" id="featured-grid"></div>
+        </div>
+      </section>
+
+      <!-- ─── Complete Interactive Digital Menu (منوی جامع رستوران) ─── -->
+      <section class="menu-section" id="menu" aria-labelledby="menu-title">
+        <div class="section-container">
+          <header class="menu-header">
+            <span class="section-kicker">COMPLETE DIGITAL MENU</span>
+            <h2 id="menu-title" class="section-title">منوی کامل رستوران چتر آبی</h2>
+            <p class="section-subtitle">
+              کلیه قیمت‌ها به <strong>تومان</strong> است. برای انتخاب غذاها و محاسبه جمع سفارش سر میز، دکمهٔ
+              <strong>«+»</strong> کنار هر غذا را لمس کنید.
+            </p>
+          </header>
+
+          <!-- Sticky Smart Controls -->
+          <div class="menu-sticky-bar" id="menu-controls">
+            <!-- Category Tabs -->
+            <div class="menu-tabs" role="tablist" aria-label="دسته‌بندی‌های منو">
+              <button type="button" class="menu-tab is-active" data-category="all" role="tab" aria-selected="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+                <span>همه</span>
+                <small class="tab-count" data-count-for="all">۸۱</small>
+              </button>
+              <button type="button" class="menu-tab" data-category="breakfast" role="tab" aria-selected="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                <span>صبحانه</span>
+                <small class="tab-count" data-count-for="breakfast">۱۵</small>
+              </button>
+              <button type="button" class="menu-tab" data-category="iranian" role="tab" aria-selected="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 17h18"/><path d="M5 17a7 7 0 0 1 14 0"/><circle cx="12" cy="7" r="2"/></svg>
+                <span>غذای ایرانی</span>
+                <small class="tab-count" data-count-for="iranian">۲۸</small>
+              </button>
+              <button type="button" class="menu-tab" data-category="kebab" role="tab" aria-selected="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2c1 3 4 5 4 9a4 4 0 1 1-8 0c0-4 3-6 4-9z"/><path d="M4 20h16"/></svg>
+                <span>کباب‌ها</span>
+                <small class="tab-count" data-count-for="kebab">۹</small>
+              </button>
+              <button type="button" class="menu-tab" data-category="appetizer" role="tab" aria-selected="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 11h16a1 1 0 0 1 1 1v.5a8.5 8.5 0 0 1-17 0V12a1 1 0 0 1 1-1z"/><path d="M8 19h8"/></svg>
+                <span>پیش‌غذا و دسر</span>
+                <small class="tab-count" data-count-for="appetizer">۱۶</small>
+              </button>
+              <button type="button" class="menu-tab" data-category="drinks" role="tab" aria-selected="false">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 2h8l-1 14a3 3 0 0 1-3 3h0a3 3 0 0 1-3-3L8 2z"/><path d="M12 19v3"/><path d="M8 22h8"/><path d="M7 7h10"/></svg>
+                <span>نوشیدنی</span>
+                <small class="tab-count" data-count-for="drinks">۱۳</small>
+              </button>
+            </div>
+
+            <!-- Search, Filter & View Mode Row -->
+            <div class="menu-filter-row">
+              <div class="menu-search-wrap">
+                <svg class="search-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="m21 21-4.3-4.3" />
+                </svg>
+                <label for="menu-search" class="sr-only">جستجو در منو</label>
+                <input
+                  type="search"
+                  id="menu-search"
+                  placeholder="جستجوی نام غذا، مخلفات یا بخش (مثلاً: ماهیچه، ته‌چین، قیساوا)…"
+                  autocomplete="off"
+                />
+                <button type="button" class="search-clear" id="search-clear" hidden aria-label="پاک کردن جستجو">
+                  ×
+                </button>
+              </div>
+
+              <div class="menu-utility-group">
+                <button type="button" class="filter-chip" id="filter-featured-only" aria-pressed="false">
+                  <span>★ فقط پیشنهاد سرآشپز</span>
+                </button>
+
+                <label class="sort-select-wrap" aria-label="مرتب‌سازی قیمت">
+                  <select id="menu-sort" class="sort-select">
+                    <option value="default">ترتیب پیش‌فرض منو</option>
+                    <option value="price-asc">ارزان‌ترین به گران‌ترین</option>
+                    <option value="price-desc">گران‌ترین به ارزان‌ترین</option>
+                  </select>
+                </label>
+
+                <div class="view-switcher" role="group" aria-label="نمای منو">
+                  <button
+                    type="button"
+                    class="view-btn is-active"
+                    data-view="grid"
+                    aria-label="نمای کارتی تصویری"
+                    title="نمای کارتی تصویری"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+                  </button>
+                  <button
+                    type="button"
+                    class="view-btn"
+                    data-view="compact"
+                    aria-label="نمای فهرستی کلاسیک"
+                    title="نمای فهرستی کلاسیک"
+                  >
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Results Summary -->
+          <div class="menu-status-bar">
+            <span id="menu-result-summary">نمایش تمام آیتم‌های منو</span>
+            <span class="menu-currency-note">واحد قیمت: تومان</span>
+          </div>
+
+          <!-- Dynamic Menu Board -->
+          <div class="menu-board" id="menu-board" aria-live="polite"></div>
+
+          <!-- Empty Search State -->
+          <div class="menu-empty" id="menu-empty" hidden>
+            <div class="empty-icon" aria-hidden="true">🍽️</div>
+            <h3>موردی با این عبارت پیدا نشد</h3>
+            <p>پیشنهاد می‌کنیم عبارت دیگری را امتحان کنید یا فیلترها را به حالت اولیه برگردانید.</p>
+            <button type="button" class="btn btn-royal" id="reset-filters-btn">نمایش همه غذاها</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Brand Identity & Logo Redesign Showcase ─── -->
+      <section class="brand-story-section" id="brand-story" aria-labelledby="brand-story-title">
+        <div class="section-container">
+          <div class="brand-story-grid">
+            <div class="brand-story-card brand-logo-presenter">
+              <div class="logo-stage-card">
+                <span class="logo-stage-badge">بازطراحی نشان تجاری · NEW BRAND IDENTITY</span>
+                <img
+                  class="logo-showcase-img"
+                  src="images/logo.svg"
+                  width="300"
+                  height="184"
+                  alt="لوگوی جدید رستوران چتر آبی — Blue Umbrella Restaurant"
+                />
+                <div class="logo-swatch-row" aria-label="پالت رنگی برند چتر آبی">
+                  <div class="color-swatch" style="--sw: #071e36"><span>لاجوردی سلطنتی</span></div>
+                  <div class="color-swatch" style="--sw: #1669a8"><span>آبی فیروزه‌ای</span></div>
+                  <div class="color-swatch" style="--sw: #4cc9f0"><span>آسمانی چتر آبی</span></div>
+                  <div class="color-swatch" style="--sw: #d9a436"><span>طلایی زعفران</span></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="brand-story-copy">
+              <span class="section-kicker">ARCHITECTURE OF HOSPITALITY</span>
+              <h2 id="brand-story-title" class="section-title">فلسفهٔ طراحی چتر آبی؛ تلفیق اصالت تبریز و ظرافت مدرن</h2>
+              <p class="brand-story-text">
+                در بازطراحی هویت بصری <strong>رستوران چتر آبی (Blue Umbrella)</strong>، نماد «چتر آبی» با
+                الهام از طاق‌های معماری ایرانی و «سرپوش طلایی ظروف مجلسی» (Cloche) ترکیب شده است. رنگ‌های
+                لاجوردی و آبی آسمانی حس آرامش و میهمان‌نوازی را تداعی می‌کنند و رگه‌های طلایی زعفرانی، گرمای
+                غذاهای اصیل ایرانی در ظروف چینی دست‌ساز را به تصویر می‌کشند.
+              </p>
+
+              <div class="brand-pillars">
+                <div class="pillar-card">
+                  <strong>مواد اولیه تازه روز</strong>
+                  <p>گوشت گوسفندی تازه، برنج ۱۰۰٪ ایرانی و زعفران سرگل خالص در تمامی وعده‌ها.</p>
+                </div>
+                <div class="pillar-card">
+                  <strong>صبحانه‌های اصیل تبریزی</strong>
+                  <p>از قیساوای خرما و گردو و سرشیر محلی تا املت‌های درباری و تبریزی در تابه مسی.</p>
+                </div>
+                <div class="pillar-card">
+                  <strong>میزبانی گرم خانوادگی</strong>
+                  <p>فضایی دلنشین برای دورهمی‌های خانوادگی، قرارهای کاری و میهمانی‌های ویژه در تبریز.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ─── Contact & Reservation Section ─── -->
+      <section class="contact-section" id="contact" aria-labelledby="contact-title">
+        <div class="contact-orbit" aria-hidden="true">
+          <div class="orbit-ring"></div>
+          <div class="orbit-ring orbit-ring-2"></div>
+          <div class="orbit-dots"></div>
+        </div>
+
+        <div class="contact-inner">
+          <span class="contact-kicker">RESERVATION & DIRECT ORDER</span>
+          <h2 id="contact-title" class="contact-title">آمادهٔ میزبانی از لحظه‌های خوشمزهٔ شما هستیم</h2>
+          <p class="contact-tagline">
+            برای رزرو میز، سفارش تلفنی یا هماهنگی میهمانی، مستقیم با خطوط رستوران چتر آبی تماس بگیرید یا از
+            طریق واتساپ پیام بفرستید.
+          </p>
+
+          <div class="contact-constellation">
+            <a class="orbit-card orbit-card-main" href="tel:+984133312437">
+              <span class="orbit-card-label">خط اول رزرو و سفارش (تبریز)</span>
+              <span class="orbit-card-value" dir="ltr">041 3331 2437</span>
+              <span class="orbit-card-action">تماس مستقیم تلفنی</span>
+            </a>
+
+            <a class="orbit-card" href="tel:+984133297177">
+              <span class="orbit-card-label">خط دوم رستوران</span>
+              <span class="orbit-card-value" dir="ltr">041 3329 7177</span>
+              <span class="orbit-card-sub">پاسخگویی سریع در ساعات کاری</span>
+            </a>
+
+            <a
+              class="orbit-card orbit-card-wa"
+              href="https://wa.me/989122794809"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span class="orbit-card-label">واتساپ رستوران</span>
+              <span class="orbit-card-value" dir="ltr">0912 279 4809</span>
+              <span class="orbit-card-sub">ارسال پیام یا لیست سفارش</span>
+            </a>
+          </div>
+
+          <div class="contact-bottom-actions">
+            <button type="button" class="btn btn-outline-light" data-scroll="menu">
+              بازگشت به بالای منو ↑
+            </button>
+            <button type="button" class="btn btn-outline-light" id="share-menu-btn">
+              اشتراک‌گذاری لینک منو
+            </button>
+          </div>
+        </div>
+
+        <footer class="site-foot">
+          <img
+            class="logo-img-foot"
+            src="images/logo.svg"
+            width="160"
+            height="98"
+            alt="رستوران چتر آبی"
+            loading="lazy"
+          />
+          <p>
+            © <span id="year"></span> رستوران چتر آبی (Blue Umbrella Restaurant) · کلیه قیمت‌ها به تومان است.
+          </p>
+        </footer>
+      </section>
+    </main>
+
+    <!-- ─── Floating Bottom Order Bar (میز انتخاب من) ─── -->
+    <div class="floating-tray-bar" id="floating-tray-bar" hidden>
+      <div class="floating-tray-inner">
+        <div class="floating-tray-info">
+          <span class="floating-tray-count" id="floating-tray-count">۰ مورد در میز شما</span>
+          <strong class="floating-tray-total" id="floating-tray-total">۰ تومان</strong>
+        </div>
+        <div class="floating-tray-actions">
+          <button type="button" class="btn-tray-view" id="floating-tray-open">
+            مشاهده و ثبت سفارش
+          </button>
         </div>
       </div>
+    </div>
 
-      <div class="hero-scroll-hint" aria-hidden="true">
-        <span>پایین بروید</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 5v14M5 12l7 7 7-7" />
-        </svg>
-      </div>
-    </section>
-
-    <section class="menu-section" id="menu" aria-labelledby="menu-title">
-      <div class="menu-section-inner">
-        <header class="menu-header">
-          <h2 id="menu-title">منوی رستوران</h2>
-          <p>کلیه قیمت‌ها به تومان است. موارد بدون قیمت در منوی رسمی نیاز به بررسی دارند.</p>
+    <!-- ─── Table Selection Slide-Over Drawer ─── -->
+    <div class="drawer-backdrop" id="tray-drawer-backdrop" hidden>
+      <aside class="tray-drawer" aria-labelledby="tray-drawer-title">
+        <header class="tray-drawer-head">
+          <div>
+            <h3 id="tray-drawer-title">یادداشت سفارش سر میز</h3>
+            <p>غذاهای انتخابی خود را به گارسون نشان دهید یا در واتساپ ارسال کنید.</p>
+          </div>
+          <button type="button" class="modal-close-btn" id="tray-close-btn" aria-label="بستن پنجره سفارش">
+            ×
+          </button>
         </header>
 
-        <div class="menu-controls">
-          <div class="menu-tabs" role="tablist" aria-label="دسته منو">
-            <button type="button" class="menu-tab is-active" data-category="all" role="tab" aria-selected="true">همه</button>
-            <button type="button" class="menu-tab" data-category="breakfast" role="tab" aria-selected="false">صبحانه</button>
-            <button type="button" class="menu-tab" data-category="iranian" role="tab" aria-selected="false">ایرانی</button>
-            <button type="button" class="menu-tab" data-category="kebab" role="tab" aria-selected="false">کباب</button>
-            <button type="button" class="menu-tab" data-category="appetizer" role="tab" aria-selected="false">پیش‌غذا</button>
-            <button type="button" class="menu-tab" data-category="drinks" role="tab" aria-selected="false">نوشیدنی</button>
+        <div class="tray-drawer-body" id="tray-items-list"></div>
+
+        <footer class="tray-drawer-foot" id="tray-drawer-foot">
+          <div class="tray-summary-row">
+            <span>جمع کل تخمینی:</span>
+            <strong id="tray-total-amount">۰ تومان</strong>
           </div>
-          <label class="menu-search">
-            <span class="sr-only">جستجو</span>
-            <input type="search" id="menu-search" placeholder="جستجو در منو…" autocomplete="off" />
-          </label>
+          <div class="tray-cta-stack">
+            <a
+              href="https://wa.me/989122794809"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-wa-order"
+              id="tray-wa-link"
+            >
+              ارسال لیست سفارش در واتساپ
+            </a>
+            <div class="tray-secondary-btns">
+              <a href="tel:+984133312437" class="btn btn-royal">تماس با رستوران</a>
+              <button type="button" class="btn btn-clear-tray" id="tray-clear-btn">پاک کردن لیست</button>
+            </div>
+          </div>
+        </footer>
+      </aside>
+    </div>
+
+    <!-- ─── Dish Lightbox & Photo Comparison Modal ─── -->
+    <div class="modal-backdrop" id="dish-modal-backdrop" hidden>
+      <div class="dish-modal" role="dialog" aria-modal="true" aria-labelledby="modal-dish-title">
+        <button type="button" class="modal-close-btn modal-close-floating" id="modal-close-btn" aria-label="بستن">
+          ×
+        </button>
+        <div class="dish-modal-media">
+          <img id="modal-dish-img" src="images/food/baghali-mahiche-pro.jpg" alt="" />
+          <div class="modal-media-bar" id="modal-compare-bar" hidden>
+            <button type="button" class="modal-photo-btn is-active" id="modal-btn-studio">
+              عکس استودیویی جدید ✨
+            </button>
+            <button type="button" class="modal-photo-btn" id="modal-btn-orig">
+              عکس اصلی منو
+            </button>
+          </div>
         </div>
-
-        <div class="menu-board" id="menu-board" aria-live="polite"></div>
-        <p class="menu-empty" id="menu-empty" hidden>چیزی پیدا نشد.</p>
-      </div>
-    </section>
-
-    <section class="contact-section" id="contact" aria-labelledby="contact-title">
-      <div class="contact-orbit" aria-hidden="true">
-        <div class="orbit-ring"></div>
-        <div class="orbit-dots"></div>
-      </div>
-
-      <div class="contact-inner">
-        <h2 id="contact-title" class="contact-title">بزن بریم سراغ یک وعده خوشمزه</h2>
-        <p class="contact-tagline">برای رزرو یا پرسش از منو، مستقیم زنگ بزنید — ما آماده‌ایم.</p>
-
-        <div class="contact-constellation">
-          <a class="orbit-card orbit-card-main" href="tel:+984133312437">
-            <span class="orbit-card-label">خط اصلی</span>
-            <span class="orbit-card-value" dir="ltr">041 3331 2437</span>
-            <span class="orbit-card-action">تماس</span>
-          </a>
-          <a class="orbit-card" href="tel:+984133297177">
-            <span class="orbit-card-label">خط دوم</span>
-            <span class="orbit-card-value" dir="ltr">041 3329 7177</span>
-          </a>
-          <a
-            class="orbit-card orbit-card-wa"
-            href="https://wa.me/989122794809"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <span class="orbit-card-label">واتساپ</span>
-            <span class="orbit-card-value">پیام فوری</span>
-          </a>
+        <div class="dish-modal-content">
+          <div class="dish-modal-tags">
+            <span class="modal-cat-badge" id="modal-dish-section"></span>
+            <span class="modal-feat-badge" id="modal-dish-badge" hidden></span>
+          </div>
+          <h3 id="modal-dish-title"></h3>
+          <p id="modal-dish-desc"></p>
+          <div class="dish-modal-footer">
+            <div class="modal-price-box">
+              <span class="modal-price-label">قیمت</span>
+              <strong class="modal-price-val" id="modal-dish-price"></strong>
+            </div>
+            <button type="button" class="btn btn-royal" id="modal-add-btn">
+              + افزودن به یادداشت سفارش
+            </button>
+          </div>
         </div>
-
-        <button type="button" class="contact-menu-back" data-scroll="menu">برگشت به منو ↑</button>
       </div>
+    </div>
 
-      <footer class="site-foot">
-        <img class="logo-img logo-img-foot" src="images/logo.svg" width="160" height="102" alt="چتر آبی" loading="lazy" />
-        <p>© <span id="year"></span> رستوران چتر آبی · قیمت‌ها ممکن است تغییر کند.</p>
-      </footer>
-    </section>
-
-    <script src="script.js" defer></script>
+    <script src="js/menu-data.js?v=2"></script>
+    <script src="script.js?v=2"></script>
   </body>
 </html>
